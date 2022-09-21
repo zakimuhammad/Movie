@@ -1,9 +1,8 @@
 package com.zaki.movieapp.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.zaki.movieapp.MovieApplication
-import com.zaki.movieapp.R
 import com.zaki.movieapp.databinding.ActivityMainBinding
 import com.zaki.movieapp.viewmodel.MovieViewModel
 import javax.inject.Inject
@@ -20,5 +19,6 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
     }
 }

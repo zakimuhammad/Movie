@@ -7,4 +7,5 @@ class MovieViewModel @Inject constructor(
     private val movieRepository: MovieRepository
 ) {
 
+    val name = "Zaki"
 }

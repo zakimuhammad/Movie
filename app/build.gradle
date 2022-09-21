@@ -46,16 +46,31 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     //dagger dependency
-    implementation 'com.google.dagger:dagger:2.42'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.42'
-    kapt 'com.google.dagger:dagger-compiler:2.42'
+    def dagger = "2.42"
+    implementation "com.google.dagger:dagger:$dagger"
+    annotationProcessor "com.google.dagger:dagger-compiler:$dagger"
+    kapt "com.google.dagger:dagger-compiler:$dagger"
 
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.8.1'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
+    // retrofit & okhttp
+    def retrofit = "2.9.0"
+    def okhttp = "4.9.0"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit"
+    implementation "com.squareup.retrofit2:adapter-rxjava3:$retrofit"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp"
 
-    implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
-    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+    // rx java
+    def rx_java_3 = "3.0.0"
+    implementation "io.reactivex.rxjava3:rxjava:$rx_java_3"
+    implementation "io.reactivex.rxjava3:rxandroid:$rx_java_3"
+
+    // kotlin coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.2'
+
+    // room
+    def room_version = "2.4.3"
+    implementation("androidx.room:room-runtime:$room_version")
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+    kapt("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-rxjava3:$room_version")
 }

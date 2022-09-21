@@ -1,16 +1,13 @@
 package com.zaki.movieapp
 
 import android.app.Application
-import com.zaki.movieapp.di.AppComponent
-import com.zaki.movieapp.di.AppModule
-import com.zaki.movieapp.di.DaggerAppComponent
-import com.zaki.movieapp.di.NetworkModule
+import com.zaki.movieapp.di.*
 
 class MovieApplication: Application() {
 
-    val appComponent = DaggerAppComponent.create()
-
-    override fun onCreate() {
-        super.onCreate()
-    }
+    val appComponent: AppComponent = DaggerAppComponent.builder()
+        .appModule(AppModule(this))
+        .networkModule(NetworkModule())
+        .databaseModule(DatabaseModule())
+        .build()
 }
