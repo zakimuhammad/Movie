@@ -2,30 +2,41 @@ package com.zaki.movieapp.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.zaki.movieapp.MovieApplication
 import com.zaki.movieapp.data.remote.api.MovieApiService
 import dagger.Module
 import dagger.Provides
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import javax.inject.Singleton
 
 @Module
 class NetworkModule {
 
-    @Singleton
     @Provides
-    fun provideGson(): Gson {
-        val gsonBuilder = GsonBuilder()
-        return gsonBuilder.create()
+    fun provideOkHttpClient(): OkHttpClient {
+        val interceptor = HttpLoggingInterceptor()
+        return OkHttpClient.Builder()
+            .addInterceptor(interceptor)
+            .build()
     }
 
-    @Singleton
     @Provides
-    fun provideMovieApiService(gson: Gson): MovieApiService {
+    fun provideGson(): Gson {
+        return GsonBuilder()
+            .setLenient()
+            .create()
+    }
+
+    @Provides
+    fun provideMovieApiService(
+        gson: Gson,
+        okHttpClient: OkHttpClient
+    ): MovieApiService {
         return Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create(gson))
             .baseUrl("https://api.themoviedb.org/3/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(MovieApiService::class.java)
     }
