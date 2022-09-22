@@ -1,6 +1,7 @@
 package com.zaki.movieapp.di
 
 import android.app.Application
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -15,4 +16,8 @@ class AppModule(
     fun provideApplication(): Application {
         return application
     }
+
+    @Provides
+    @Singleton
+    fun provideApplicationContext(): Context = application.applicationContext
 }
