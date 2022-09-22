@@ -3,11 +3,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="colorPrimary">#03a9f4</color>
-    <color name="colorPrimaryDark">#007ac1</color>
-    <color name="colorPrimaryLight">#67daff</color>
+    <color name="colorPrimary">#424242</color>
+    <color name="colorPrimaryDark">#1b1b1b</color>
+    <color name="colorPrimaryLight">#6d6d6d</color>
 
-    <color name="colorSecondary">#0277bd</color>
-    <color name="colorSecondaryLight">#58a5f0</color>
-    <color name="colorSecondaryDark">#004c8c</color>
+    <color name="colorSecondary">#212121</color>
+    <color name="colorSecondaryLight">#484848</color>
+    <color name="colorSecondaryDark">#000000</color>
 </resources>
