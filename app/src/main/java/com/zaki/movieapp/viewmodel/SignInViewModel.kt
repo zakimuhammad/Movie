@@ -3,6 +3,7 @@ package com.zaki.movieapp.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zaki.movieapp.data.local.LocalDataSource
+import com.zaki.movieapp.domain.SessionUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,7 +11,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SignInViewModel @Inject constructor(
-    private val localDataSource: LocalDataSource
+    private val localDataSource: LocalDataSource,
+    private val sessionUseCase: SessionUseCase
 ): ViewModel() {
 
     private val _signInUiState: MutableStateFlow<SignInUiState> = MutableStateFlow(SignInUiState.Initial)
@@ -22,7 +24,8 @@ class SignInViewModel @Inject constructor(
 
         if (user != null) {
             if (user.password == password) {
-                _signInUiState.emit(SignInUiState.Success)
+                _signInUiState.emit(SignInUiState.GoToMainActivity)
+                sessionUseCase.saveSession(userName)
             } else {
                 _signInUiState.emit(SignInUiState.Failed("Password Salah!"))
             }
@@ -30,11 +33,20 @@ class SignInViewModel @Inject constructor(
             _signInUiState.emit(SignInUiState.Failed("User Tidak Ada!"))
         }
     }
+
+    fun checkSession() = viewModelScope.launch {
+        sessionUseCase.getLoginSession()
+            .collect {
+                if (it.isNotEmpty()) {
+                    _signInUiState.emit(SignInUiState.GoToMainActivity)
+                }
+            }
+    }
 }
 
 sealed class SignInUiState {
     object Initial: SignInUiState()
     object Loading: SignInUiState()
-    object Success: SignInUiState()
+    object GoToMainActivity: SignInUiState()
     data class Failed(val message: String): SignInUiState()
 }

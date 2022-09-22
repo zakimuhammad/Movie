@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ContentInfoCompat.Flags
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.zaki.movieapp.MovieApplication
@@ -29,6 +28,8 @@ class SignInActivity : AppCompatActivity() {
 
         initClickListener()
         collectState()
+
+        viewModel.checkSession()
     }
 
     private fun initClickListener() {
@@ -58,7 +59,7 @@ class SignInActivity : AppCompatActivity() {
                     SignInUiState.Loading -> {
                         binding.progressBar.isVisible = true
                     }
-                    SignInUiState.Success -> {
+                    SignInUiState.GoToMainActivity -> {
                         binding.progressBar.isVisible = false
                         val intent = Intent(this@SignInActivity, MainActivity::class.java)
                             .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
