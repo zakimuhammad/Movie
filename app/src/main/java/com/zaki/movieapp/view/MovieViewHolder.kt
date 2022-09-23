@@ -2,19 +2,18 @@ package com.zaki.movieapp.view
 
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.zaki.movieapp.MovieApplication
 import com.zaki.movieapp.R
 import com.zaki.movieapp.data.remote.response.MovieTrending
 import com.zaki.movieapp.databinding.ItemMovieBinding
 import com.zaki.movieapp.domain.DateUseCase
-import javax.inject.Inject
+import com.zaki.movieapp.helper.OnMovieClickListener
 
 class MovieViewHolder(
     private val binding: ItemMovieBinding,
     private val dateUseCase: DateUseCase
 ): RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(movie: MovieTrending) {
+    fun bind(movie: MovieTrending, onMovieClickListener: OnMovieClickListener) {
         binding.tvTitle.text = movie.title
         binding.tvOverview.text = movie.overview
         binding.tvReleaseDate.text = dateUseCase.convertDate(movie.releaseDate.orEmpty())
@@ -22,5 +21,15 @@ class MovieViewHolder(
         Glide.with(itemView.context)
             .load("https://image.tmdb.org/t/p/w500/${movie.posterPath}")
             .into(binding.ivMovie)
+
+        val backgroundResource = if (movie.isBookmarked)
+            R.drawable.ic_baseline_bookmark_primary
+        else
+            R.drawable.ic_baseline_bookmark_white
+        binding.buttonFavorite.setBackgroundResource(backgroundResource)
+
+        binding.buttonFavorite.setOnClickListener {
+            onMovieClickListener.onClickBookmark(movie)
+        }
     }
 }

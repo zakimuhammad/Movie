@@ -1,6 +1,7 @@
 package com.zaki.movieapp.data.repository
 
 import com.zaki.movieapp.data.local.dao.MovieDao
+import com.zaki.movieapp.data.local.entitiy.MovieTrendingEntity
 import com.zaki.movieapp.data.remote.api.MovieApiService
 import com.zaki.movieapp.data.remote.response.MovieTrending
 import com.zaki.movieapp.domain.ConnectivityManagerUseCase
@@ -18,19 +19,10 @@ import javax.inject.Inject
 class MovieRepository @Inject constructor(
     private val movieApiService: MovieApiService,
     private val movieDao: MovieDao,
-    private val connectivityManagerUseCase: ConnectivityManagerUseCase
 ) {
 
     fun getMovies(): Observable<List<MovieTrending>> {
-        return if (connectivityManagerUseCase.isHasInternet()) {
-            Observable.concatArrayEager(getMoviesFromApi(), getMoviesFromDb())
-        } else {
-            getMoviesFromDb()
-        }
-    }
-
-    private fun getMoviesFromApi(): Observable<List<MovieTrending>> {
-        return movieApiService.getTrendingMovie(MovieApiService.API_KEY)
+        movieApiService.getTrendingMovie(MovieApiService.API_KEY)
             .map { it.results ?: emptyList() }
             .doOnNext { movies ->
                 val moviesEntity = movies.map { it.toEntity() }
@@ -38,13 +30,23 @@ class MovieRepository @Inject constructor(
                     movieDao.insertMovies(it)
                 }
             }
-    }
 
-    private fun getMoviesFromDb(): Observable<List<MovieTrending>> {
         return movieDao.getTrendingMovies()
             .subscribeOn(Schedulers.io())
             .map { movieTrendingEntities ->
                 movieTrendingEntities.map { it.toMovieTrending() }
             }
+    }
+
+    fun getFavoriteMovies(): Observable<List<MovieTrending>> {
+        return movieDao.getFavoriteMovies()
+            .subscribeOn(Schedulers.io())
+            .map { movieTrendingEntities ->
+                movieTrendingEntities.map { it.toMovieTrending() }
+            }
+    }
+
+    suspend fun updateMovie(movie: MovieTrendingEntity) {
+        movieDao.updateMovie(movie)
     }
 }

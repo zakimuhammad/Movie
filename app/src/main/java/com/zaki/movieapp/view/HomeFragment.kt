@@ -7,7 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zaki.movieapp.MovieApplication
+import com.zaki.movieapp.data.remote.response.MovieTrending
 import com.zaki.movieapp.databinding.FragmentHomeBinding
+import com.zaki.movieapp.helper.OnMovieClickListener
+import com.zaki.movieapp.mapper.MovieMapper.toEntity
 import com.zaki.movieapp.viewmodel.HomeViewModel
 import javax.inject.Inject
 
@@ -42,6 +45,12 @@ class HomeFragment: Fragment() {
         binding.rvMovie.apply {
             adapter = this@HomeFragment.movieAdapter
             layoutManager = LinearLayoutManager(requireContext())
+        }
+
+        movieAdapter.onBookmarkClickListener = object : OnMovieClickListener {
+            override fun onClickBookmark(movieTrending: MovieTrending) {
+                viewModel.bookmarkMovie(movieTrending.toEntity())
+            }
         }
     }
 

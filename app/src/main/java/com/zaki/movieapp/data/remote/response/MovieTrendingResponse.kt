@@ -12,5 +12,6 @@ data class MovieTrending(
     @SerializedName("overview") val overview: String? = null,
     @SerializedName("release_date") val releaseDate: String? = null,
     @SerializedName("poster_path") val posterPath: String? = null,
-    @SerializedName("vote_average") val voteAverage: Double? = null
+    @SerializedName("vote_average") val voteAverage: Double? = null,
+    val isBookmarked: Boolean = false
 )

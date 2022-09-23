@@ -11,7 +11,8 @@ object MovieMapper {
         overview = overview,
         releaseDate = releaseDate,
         posterPath = posterPath,
-        voteAverage = voteAverage
+        voteAverage = voteAverage,
+        isFavorite = isBookmarked
     )
 
     fun MovieTrendingEntity.toMovieTrending() = MovieTrending(
@@ -20,6 +21,7 @@ object MovieMapper {
         overview = overview,
         releaseDate = releaseDate,
         posterPath = posterPath,
-        voteAverage = voteAverage
+        voteAverage = voteAverage,
+        isBookmarked = isFavorite
     )
 }
