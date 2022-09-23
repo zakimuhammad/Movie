@@ -9,6 +9,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import kotlin.math.log
 
 class SessionUseCase @Inject constructor(
     context: Context

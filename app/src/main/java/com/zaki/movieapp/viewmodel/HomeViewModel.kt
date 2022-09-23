@@ -16,7 +16,6 @@ class HomeViewModel @Inject constructor(
 
     fun getMovies() {
         movieRepository.getMovies()
-            .debounce(500, TimeUnit.MILLISECONDS)
             .doOnError {
                 Log.e("ERROR", it.localizedMessage.orEmpty())
             }
