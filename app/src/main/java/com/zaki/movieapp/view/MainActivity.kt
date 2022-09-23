@@ -1,11 +1,12 @@
 package com.zaki.movieapp.view
 
 import android.os.Bundle
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.zaki.movieapp.MovieApplication
+import com.zaki.movieapp.R
 import com.zaki.movieapp.databinding.ActivityMainBinding
 import com.zaki.movieapp.viewmodel.MovieViewModel
 import javax.inject.Inject
@@ -24,13 +25,13 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupAdapter()
-        collectState()
+        setupNavigation()
     }
 
-    private fun setupAdapter() {
-        binding.rvMovie.adapter = adapter
-        binding.rvMovie.layoutManager = LinearLayoutManager(this)
+    private fun setupNavigation() {
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container_view_main) as NavHostFragment
+        val navController = navHostFragment.navController
+        binding.bottomNavMain.setupWithNavController(navController)
     }
 
     private fun collectState() {

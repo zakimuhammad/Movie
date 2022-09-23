@@ -8,4 +8,7 @@
     <string name="have_account">Sudah Punya Akun?</string>
     <string name="username">Username</string>
     <string name="not_have_account">Tidak Punya Akun?</string>
+    <string name="home">Home</string>
+    <string name="favorite">Favorite</string>
+    <string name="profile">Profile</string>
 </resources>
