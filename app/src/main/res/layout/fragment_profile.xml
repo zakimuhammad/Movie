@@ -2,13 +2,43 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/tv_profile_name"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Halo Profile"
+        android:layout_margin="16dp"
+        tools:text="Halo Profile"
+        android:textSize="40sp"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_profile_username"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        tools:text="username"
+        android:textSize="24sp"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_profile_name"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/logout"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

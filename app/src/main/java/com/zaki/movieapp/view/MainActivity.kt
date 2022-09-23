@@ -4,12 +4,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.zaki.movieapp.MovieApplication
 import com.zaki.movieapp.R
 import com.zaki.movieapp.databinding.ActivityMainBinding
-import com.zaki.movieapp.viewmodel.MovieViewModel
-import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 

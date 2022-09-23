@@ -8,13 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zaki.movieapp.MovieApplication
 import com.zaki.movieapp.databinding.FragmentHomeBinding
-import com.zaki.movieapp.viewmodel.MovieViewModel
+import com.zaki.movieapp.viewmodel.HomeViewModel
 import javax.inject.Inject
 
 class HomeFragment: Fragment() {
 
     @Inject
-    lateinit var viewModel: MovieViewModel
+    lateinit var viewModel: HomeViewModel
     @Inject
     lateinit var movieAdapter: MovieAdapter
 
