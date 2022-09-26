@@ -16,19 +16,30 @@ class MovieRepository @Inject constructor(
 ) {
 
     fun getMovies(): Observable<List<MovieTrending>> {
-        movieApiService.getTrendingMovie(MovieApiService.API_KEY)
+        return getMoviesFromDB()
+    }
+
+    private fun getMoviesFromApi(): Observable<List<MovieTrending>> {
+        return movieApiService.getTrendingMovie(MovieApiService.API_KEY)
             .map { it.results ?: emptyList() }
+            .map { movies -> movies.map { it.toEntity() } }
             .doOnNext { movies ->
-                val moviesEntity = movies.map { it.toEntity() }
-                moviesEntity.forEach {
+                movies.forEach {
                     movieDao.insertMovies(it)
                 }
             }
+            .map { movies -> movies.map { it.toMovieTrending() }}
+    }
 
+    private fun getMoviesFromDB(): Observable<List<MovieTrending>> {
         return movieDao.getTrendingMovies()
             .subscribeOn(Schedulers.io())
             .map { movieTrendingEntities ->
                 movieTrendingEntities.map { it.toMovieTrending() }
+            }
+            .flatMap {
+                return@flatMap if (it.isEmpty()) getMoviesFromApi()
+                else Observable.just(it)
             }
     }
 

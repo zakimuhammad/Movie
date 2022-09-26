@@ -78,13 +78,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
         tools:text="10 September 2022"
         android:textColor="@color/white"
         android:textSize="14sp"
         app:layout_constraintTop_toBottomOf="@id/ic_star"
         app:layout_constraintStart_toEndOf="@id/iv_movie"
-        app:layout_constraintEnd_toStartOf="@id/button_favorite"/>
+        app:layout_constraintEnd_toStartOf="@id/button_favorite"
+        app:layout_constraintBottom_toBottomOf="@id/iv_movie"/>
 
     <ImageButton
         android:id="@+id/button_favorite"
@@ -93,7 +93,6 @@
         android:padding="16dp"
         android:layout_margin="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/tv_release_date"
-        app:layout_constraintTop_toTopOf="@id/tv_release_date"/>
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
