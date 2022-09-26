@@ -1,6 +1,5 @@
 package com.zaki.movieapp.viewmodel
 
-import android.provider.ContactsContract.Profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zaki.movieapp.data.local.LocalDataSource

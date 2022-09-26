@@ -10,7 +10,6 @@ import com.zaki.movieapp.data.local.entitiy.AuthEntity
 import com.zaki.movieapp.databinding.ActivitySignUpBinding
 import com.zaki.movieapp.viewmodel.SignUpUIState
 import com.zaki.movieapp.viewmodel.SignUpViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SignUpActivity : AppCompatActivity() {
