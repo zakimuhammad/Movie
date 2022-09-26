@@ -1,6 +1,6 @@
 package com.zaki.movieapp.viewmodel
 
-import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,19 +15,30 @@ class HomeViewModel @Inject constructor(
     private val movieRepository: MovieRepository,
 ): ViewModel() {
 
-    val movies: MutableLiveData<List<MovieTrending>> = MutableLiveData()
+    private val _homeUiState: MutableLiveData<HomeUiState> = MutableLiveData(HomeUiState.Initial)
+    val homeUiState: LiveData<HomeUiState> = _homeUiState
 
     fun getMovies() {
+        _homeUiState.postValue(HomeUiState.Loading)
         movieRepository.getMovies()
             .doOnError {
-                Log.e("ERROR", it.localizedMessage.orEmpty())
+                _homeUiState.postValue(HomeUiState.Error)
             }
             .subscribe {
-                movies.postValue(it)
+                _homeUiState.postValue(HomeUiState.ShowMovies(it))
             }
+
+        _homeUiState.postValue(HomeUiState.Initial)
     }
 
     fun bookmarkMovie(movie: MovieTrendingEntity) = viewModelScope.launch(Dispatchers.IO) {
         movieRepository.updateMovie(movie.copy(isFavorite = movie.isFavorite.not()))
     }
+}
+
+sealed class HomeUiState {
+    object Initial: HomeUiState()
+    object Loading: HomeUiState()
+    data class ShowMovies(val movies: List<MovieTrending>): HomeUiState()
+    object Error: HomeUiState()
 }

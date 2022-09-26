@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.zaki.movieapp.MovieApplication
@@ -11,6 +14,7 @@ import com.zaki.movieapp.data.remote.response.MovieTrending
 import com.zaki.movieapp.databinding.FragmentHomeBinding
 import com.zaki.movieapp.helper.OnMovieClickListener
 import com.zaki.movieapp.mapper.MovieMapper.toEntity
+import com.zaki.movieapp.viewmodel.HomeUiState
 import com.zaki.movieapp.viewmodel.HomeViewModel
 import javax.inject.Inject
 
@@ -57,8 +61,19 @@ class HomeFragment: Fragment() {
     private fun observeViewModel() {
         viewModel.getMovies()
 
-        viewModel.movies.observe(viewLifecycleOwner) {
-            movieAdapter.setMovies(it)
+        viewModel.homeUiState.observe(viewLifecycleOwner) {
+            when(it) {
+                HomeUiState.Error -> {
+                    binding.progressBar.isGone = true
+                    Toast.makeText(requireContext(), "Something Wrong!", Toast.LENGTH_SHORT).show()
+                }
+                HomeUiState.Initial -> binding.progressBar.isGone = true
+                HomeUiState.Loading -> binding.progressBar.isVisible = true
+                is HomeUiState.ShowMovies -> {
+                    movieAdapter.setMovies(it.movies)
+                    binding.progressBar.isGone = true
+                }
+            }
         }
     }
 }
