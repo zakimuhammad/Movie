@@ -1,15 +1,15 @@
-package com.zaki.movieapp
+package com.zaki.movieapp.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth.assertThat
 import com.zaki.movieapp.data.remote.response.MovieTrending
 import com.zaki.movieapp.data.repository.MovieRepository
-import com.zaki.movieapp.viewmodel.HomeUiState
-import com.zaki.movieapp.viewmodel.HomeViewModel
 import io.mockk.MockKAnnotations
+import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.reactivex.rxjava3.core.Observable
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -29,6 +29,11 @@ class HomeViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = HomeViewModel(movieRepository)
+    }
+
+    @After
+    fun tearDown() {
+        clearAllMocks()
     }
 
     @Test
