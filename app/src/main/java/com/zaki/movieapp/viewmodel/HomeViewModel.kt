@@ -27,8 +27,6 @@ class HomeViewModel @Inject constructor(
             .subscribe {
                 _homeUiState.postValue(HomeUiState.ShowMovies(it))
             }
-
-        _homeUiState.postValue(HomeUiState.Initial)
     }
 
     fun bookmarkMovie(movie: MovieTrendingEntity) = viewModelScope.launch(Dispatchers.IO) {
