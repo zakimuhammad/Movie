@@ -7,12 +7,14 @@ import androidx.lifecycle.viewModelScope
 import com.zaki.movieapp.data.local.entitiy.MovieTrendingEntity
 import com.zaki.movieapp.data.remote.response.MovieTrending
 import com.zaki.movieapp.data.repository.MovieRepository
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(
     private val movieRepository: MovieRepository,
+    private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
 
     private val _homeUiState: MutableLiveData<HomeUiState> = MutableLiveData(HomeUiState.Initial)
@@ -29,7 +31,7 @@ class HomeViewModel @Inject constructor(
             }
     }
 
-    fun bookmarkMovie(movie: MovieTrendingEntity) = viewModelScope.launch(Dispatchers.IO) {
+    fun bookmarkMovie(movie: MovieTrendingEntity) = viewModelScope.launch(ioDispatcher) {
         movieRepository.updateMovie(movie.copy(isFavorite = movie.isFavorite.not()))
     }
 }

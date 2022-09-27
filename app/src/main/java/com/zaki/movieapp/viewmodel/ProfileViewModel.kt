@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.zaki.movieapp.data.local.LocalDataSource
 import com.zaki.movieapp.data.local.entitiy.AuthEntity
 import com.zaki.movieapp.domain.SessionUseCase
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,13 +15,14 @@ import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
     private val localDataSource: LocalDataSource,
-    private val sessionUseCase: SessionUseCase
+    private val sessionUseCase: SessionUseCase,
+    private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
 
     private val _userUiState: MutableStateFlow<ProfileUiState> = MutableStateFlow(ProfileUiState.Initial)
     val userUiState = _userUiState.asStateFlow()
 
-    fun getUser() = viewModelScope.launch(Dispatchers.IO) {
+    fun getUser() = viewModelScope.launch(ioDispatcher) {
         _userUiState.emit(ProfileUiState.Loading)
         val username = sessionUseCase.getLoginSession().first()
 
@@ -29,7 +31,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun logout() = viewModelScope.launch {
+    fun logout() = viewModelScope.launch(ioDispatcher) {
         sessionUseCase.saveSession("")
         _userUiState.emit(ProfileUiState.GoToLoginActivity)
     }

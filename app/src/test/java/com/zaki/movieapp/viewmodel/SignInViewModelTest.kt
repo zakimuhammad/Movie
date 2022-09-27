@@ -12,18 +12,20 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 
-@ExperimentalCoroutinesApi()
+@ExperimentalCoroutinesApi
 class SignInViewModelTest {
 
     @get:Rule
-    var testRule: TestRule = InstantTaskExecutorRule()
+    val testRule: TestRule = InstantTaskExecutorRule()
 
     @MockK
     lateinit var localDataSource: LocalDataSource
@@ -31,16 +33,20 @@ class SignInViewModelTest {
     @MockK
     lateinit var sessionUseCase: SessionUseCase
 
+    private val testDispatcher = UnconfinedTestDispatcher()
+
     private lateinit var viewModel: SignInViewModel
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        viewModel = SignInViewModel(localDataSource, sessionUseCase)
+        Dispatchers.setMain(testDispatcher)
+        viewModel = SignInViewModel(localDataSource, sessionUseCase, testDispatcher)
     }
 
     @After
     fun tearDown() {
+        Dispatchers.resetMain()
         clearAllMocks()
     }
 
@@ -50,7 +56,6 @@ class SignInViewModelTest {
 
         viewModel.checkSession()
 
-        assertThat(viewModel.signInUiState.value).isEqualTo(SignInUiState.Initial)
         assertThat(viewModel.signInUiState.value).isEqualTo(SignInUiState.GoToMainActivity)
     }
 
@@ -67,7 +72,6 @@ class SignInViewModelTest {
 
         viewModel.checkLogin(userName = authEntity.userName, password = authEntity.password)
 
-        assertThat(viewModel.signInUiState.value).isEqualTo(SignInUiState.Initial)
         assertThat(viewModel.signInUiState.value).isEqualTo(SignInUiState.GoToMainActivity)
     }
 
@@ -82,7 +86,6 @@ class SignInViewModelTest {
 
         viewModel.checkLogin(userName = authEntity.userName, password = "123456")
 
-        assertThat(viewModel.signInUiState.value).isEqualTo(SignInUiState.Initial)
         assertThat(viewModel.signInUiState.value).isEqualTo(SignInUiState.Failed("Password Salah!"))
     }
 
@@ -92,7 +95,6 @@ class SignInViewModelTest {
 
         viewModel.checkLogin(userName = "zaki", password = "123456")
 
-        assertThat(viewModel.signInUiState.value).isEqualTo(SignInUiState.Initial)
         assertThat(viewModel.signInUiState.value).isEqualTo(SignInUiState.Failed("User Tidak Ada!"))
     }
 }

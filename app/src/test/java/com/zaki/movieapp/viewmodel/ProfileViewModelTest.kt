@@ -14,6 +14,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
@@ -36,13 +37,13 @@ class ProfileViewModelTest {
 
     private lateinit var viewModel: ProfileViewModel
 
-    private var testDispatcher = StandardTestDispatcher()
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
         Dispatchers.setMain(testDispatcher)
-        viewModel = ProfileViewModel(localDataSource, sessionUseCase)
+        viewModel = ProfileViewModel(localDataSource, sessionUseCase, testDispatcher)
     }
 
     @After
@@ -68,7 +69,6 @@ class ProfileViewModelTest {
 
         viewModel.getUser()
 
-        assertThat(viewModel.userUiState.value).isEqualTo(ProfileUiState.Initial)
         assertThat(viewModel.userUiState.value).isEqualTo(ProfileUiState.ShowUser(authEntity))
     }
 
@@ -78,7 +78,6 @@ class ProfileViewModelTest {
 
         viewModel.logout()
 
-        assertThat(viewModel.userUiState.value).isEqualTo(ProfileUiState.Initial)
         assertThat(viewModel.userUiState.value).isEqualTo(ProfileUiState.GoToLoginActivity)
     }
 }

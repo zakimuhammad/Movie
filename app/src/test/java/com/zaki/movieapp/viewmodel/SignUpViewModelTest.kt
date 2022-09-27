@@ -8,12 +8,18 @@ import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coJustRun
 import io.mockk.impl.annotations.MockK
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 
+@ExperimentalCoroutinesApi
 class SignUpViewModelTest {
 
     @get:Rule
@@ -24,14 +30,18 @@ class SignUpViewModelTest {
 
     private lateinit var viewModel: SignUpViewModel
 
+    private val testDispatcher = UnconfinedTestDispatcher()
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        viewModel = SignUpViewModel(localDataSource)
+        Dispatchers.setMain(testDispatcher)
+        viewModel = SignUpViewModel(localDataSource, testDispatcher)
     }
 
     @After
     fun tearDown() {
+        Dispatchers.resetMain()
         clearAllMocks()
     }
 
@@ -42,7 +52,6 @@ class SignUpViewModelTest {
         coJustRun { localDataSource.insertUser(authEntity) }
 
         viewModel.insertUser(authEntity)
-        assertThat(viewModel.signUpUiState.value).isEqualTo(SignUpUIState.Initial)
         assertThat(viewModel.signUpUiState.value).isEqualTo(SignUpUIState.GoToSignInActivity)
     }
 }

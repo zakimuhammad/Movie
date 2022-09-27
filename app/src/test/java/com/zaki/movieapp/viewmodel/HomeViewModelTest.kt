@@ -9,12 +9,18 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.reactivex.rxjava3.core.Observable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 
+@ExperimentalCoroutinesApi
 class HomeViewModelTest {
 
     @get:Rule
@@ -25,14 +31,18 @@ class HomeViewModelTest {
 
     private lateinit var viewModel: HomeViewModel
 
+    private val testDispatcher = UnconfinedTestDispatcher()
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = HomeViewModel(movieRepository)
+        Dispatchers.setMain(testDispatcher)
+        viewModel = HomeViewModel(movieRepository, testDispatcher)
     }
 
     @After
     fun tearDown() {
+        Dispatchers.resetMain()
         clearAllMocks()
     }
 
