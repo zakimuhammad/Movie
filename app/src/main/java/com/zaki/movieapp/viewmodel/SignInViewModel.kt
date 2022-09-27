@@ -34,7 +34,7 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun checkSession() = viewModelScope.launch {
+    fun checkSession() = viewModelScope.launch(Dispatchers.IO) {
         sessionUseCase.getLoginSession()
             .collect {
                 if (it.isNotEmpty()) {
