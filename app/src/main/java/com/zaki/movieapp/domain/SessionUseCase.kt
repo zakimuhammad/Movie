@@ -9,26 +9,21 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import javax.inject.Named
 
 class SessionUseCase @Inject constructor(
-    context: Context
+    @Named("login_datastore") private val dataStore: DataStore<Preferences>,
+    @Named("login_username") private val dataStoreKey: Preferences.Key<String>
 ) {
-    companion object {
-        private val Context.dataStore by preferencesDataStore(name = "login_datastore")
-
-        private val USERNAME_LOGIN = stringPreferencesKey("login_username")
-    }
-
-    private val loginDataStore: DataStore<Preferences> = context.dataStore
 
     suspend fun saveSession(username: String) {
-        loginDataStore.edit { pref ->
-            pref[USERNAME_LOGIN] = username
+        dataStore.edit { preferences ->
+            preferences[dataStoreKey] = username
         }
     }
 
-    fun getLoginSession(): Flow<String> = loginDataStore.data
-        .map { pref ->
-            pref[USERNAME_LOGIN] ?: ""
+    fun getLoginSession(): Flow<String> = dataStore.data
+        .map { preferences ->
+            preferences[dataStoreKey] ?: ""
         }
 }
