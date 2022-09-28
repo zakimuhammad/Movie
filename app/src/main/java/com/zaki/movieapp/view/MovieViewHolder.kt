@@ -31,5 +31,9 @@ class MovieViewHolder(
         binding.buttonFavorite.setOnClickListener {
             onMovieClickListener.onClickBookmark(movie)
         }
+
+        itemView.setOnClickListener {
+            onMovieClickListener.onClickItem(movie)
+        }
     }
 }

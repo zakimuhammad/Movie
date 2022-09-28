@@ -1,5 +1,6 @@
 package com.zaki.movieapp.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -50,6 +51,13 @@ class FavoriteFragment: Fragment() {
         movieAdapter.onBookmarkClickListener = object : OnMovieClickListener {
             override fun onClickBookmark(movieTrending: MovieTrending) {
                 viewModel.bookmarkMovie(movieTrending.toEntity())
+            }
+
+            override fun onClickItem(movieTrending: MovieTrending) {
+                val intent = Intent(requireActivity(), DetailMovieActivity::class.java)
+                    .putExtra(DetailMovieActivity.MOVIE_EXTRA, movieTrending)
+
+                startActivity(intent)
             }
         }
     }

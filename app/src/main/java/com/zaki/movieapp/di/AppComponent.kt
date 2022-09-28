@@ -12,4 +12,5 @@ interface AppComponent {
     fun inject(signUpActivity: SignInActivity)
     fun inject(profileFragment: ProfileFragment)
     fun inject(favoriteFragment: FavoriteFragment)
+    fun inject(detailMovieActivity: DetailMovieActivity)
 }

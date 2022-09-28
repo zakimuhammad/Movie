@@ -16,6 +16,7 @@ class MovieAdapter @Inject constructor(
     private val movies = mutableListOf<MovieTrending>()
 
     lateinit var onBookmarkClickListener: OnMovieClickListener
+    lateinit var onClickItemListener: OnMovieClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val binding = ItemMovieBinding.inflate(LayoutInflater.from(parent.context), parent, false)
