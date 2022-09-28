@@ -3,7 +3,7 @@ package com.zaki.movieapp.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zaki.movieapp.data.local.LocalDataSource
-import com.zaki.movieapp.domain.SessionUseCase
+import com.zaki.movieapp.domain.DataStoreUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class SignInViewModel @Inject constructor(
     private val localDataSource: LocalDataSource,
-    private val sessionUseCase: SessionUseCase,
+    private val dataStoreUseCase: DataStoreUseCase,
     private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
 
@@ -26,7 +26,7 @@ class SignInViewModel @Inject constructor(
         if (user != null) {
             if (user.password == password) {
                 _signInUiState.emit(SignInUiState.GoToMainActivity)
-                sessionUseCase.saveSession(userName)
+                dataStoreUseCase.saveSession(userName)
             } else {
                 _signInUiState.emit(SignInUiState.Failed("Password Salah!"))
             }
@@ -36,7 +36,7 @@ class SignInViewModel @Inject constructor(
     }
 
     fun checkSession() = viewModelScope.launch(ioDispatcher) {
-        sessionUseCase.getLoginSession()
+        dataStoreUseCase.getLoginSession()
             .collect {
                 if (it.isNotEmpty()) {
                     _signInUiState.emit(SignInUiState.GoToMainActivity)

@@ -4,9 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zaki.movieapp.data.local.LocalDataSource
 import com.zaki.movieapp.data.local.entitiy.AuthEntity
-import com.zaki.movieapp.domain.SessionUseCase
+import com.zaki.movieapp.domain.DataStoreUseCase
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
@@ -15,7 +14,7 @@ import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
     private val localDataSource: LocalDataSource,
-    private val sessionUseCase: SessionUseCase,
+    private val dataStoreUseCase: DataStoreUseCase,
     private val ioDispatcher: CoroutineDispatcher
 ): ViewModel() {
 
@@ -24,7 +23,7 @@ class ProfileViewModel @Inject constructor(
 
     fun getUser() = viewModelScope.launch(ioDispatcher) {
         _userUiState.emit(ProfileUiState.Loading)
-        val username = sessionUseCase.getLoginSession().first()
+        val username = dataStoreUseCase.getLoginSession().first()
 
         localDataSource.getUserLogin(username)?.let {
             _userUiState.emit(ProfileUiState.ShowUser(it))
@@ -32,7 +31,7 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun logout() = viewModelScope.launch(ioDispatcher) {
-        sessionUseCase.saveSession("")
+        dataStoreUseCase.saveSession("")
         _userUiState.emit(ProfileUiState.GoToLoginActivity)
     }
 }

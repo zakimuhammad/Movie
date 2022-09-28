@@ -36,7 +36,7 @@ class DetailMovieActivity : AppCompatActivity() {
 
     private fun initView() = with(binding) {
         setUp()
-        
+
         Glide.with(this@DetailMovieActivity)
             .load("https://image.tmdb.org/t/p/w500/${movie?.posterPath}")
             .into(binding.ivMovie)
@@ -49,7 +49,6 @@ class DetailMovieActivity : AppCompatActivity() {
 
     private fun setUp() {
         setSupportActionBar(binding.detailToolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         binding.collapsingToolbar.setExpandedTitleTextAppearance(R.style.TextAppearance_MyApp_Title_Expanded)
         binding.collapsingToolbar.setCollapsedTitleTextAppearance(R.style.TextAppearance_MyApp_Title_Collapsed)

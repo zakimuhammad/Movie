@@ -4,16 +4,14 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth.assertThat
 import com.zaki.movieapp.data.local.LocalDataSource
 import com.zaki.movieapp.data.local.entitiy.AuthEntity
-import com.zaki.movieapp.domain.SessionUseCase
+import com.zaki.movieapp.domain.DataStoreUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coJustRun
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -33,7 +31,7 @@ class ProfileViewModelTest {
     lateinit var localDataSource: LocalDataSource
 
     @MockK
-    lateinit var sessionUseCase: SessionUseCase
+    lateinit var sessionUseCase: DataStoreUseCase
 
     private lateinit var viewModel: ProfileViewModel
 
