@@ -14,4 +14,12 @@ class DateUseCaseTest {
 
         assertThat(formattedDate).isEqualTo("27 September 2022")
     }
+
+    @Test
+    fun testErrorDate() {
+        val currentDate = ""
+        val formattedDate = dateUseCase.convertDate(currentDate)
+
+        assertThat(formattedDate).isEqualTo("")
+    }
 }

@@ -7,10 +7,9 @@ import javax.inject.Inject
 class DateUseCase @Inject constructor() {
 
     fun convertDate(currentDate: String): String {
-        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(currentDate)
-        val dateFormatter = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
-
         return try {
+            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(currentDate)
+            val dateFormatter = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
             dateFormatter.format(sdf!!)
         } catch (e: Exception) {
             ""
