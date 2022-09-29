@@ -63,7 +63,7 @@ class ProfileViewModelTest {
             name = "Zaki"
         )
         every { sessionUseCase.getLoginSession() } returns flowOf("zaki")
-        every { localDataSource.getUserLogin(any()) } returns authEntity
+        every { localDataSource.getUserLogin(any()) } returns flowOf(authEntity)
 
         viewModel.getUser()
 

@@ -65,7 +65,7 @@ class SignInViewModelTest {
             password = "12345",
             name = "Zaki Mukhammad"
         )
-        every { localDataSource.getUserLogin(any()) } returns authEntity
+        every { localDataSource.getUserLogin(any()) } returns flowOf(authEntity)
 
         coJustRun { sessionUseCase.saveSession(authEntity.userName) }
 
@@ -81,7 +81,7 @@ class SignInViewModelTest {
             password = "12345",
             name = "Zaki Mukhammad"
         )
-        every { localDataSource.getUserLogin(any()) } returns authEntity
+        every { localDataSource.getUserLogin(any()) } returns flowOf(authEntity)
 
         viewModel.checkLogin(userName = authEntity.userName, password = "123456")
 
@@ -90,7 +90,7 @@ class SignInViewModelTest {
 
     @Test
     fun `check login with null user data then signInUiState should failed`() {
-        every { localDataSource.getUserLogin(any()) } returns null
+        every { localDataSource.getUserLogin(any()) } returns flowOf(null)
 
         viewModel.checkLogin(userName = "zaki", password = "123456")
 
