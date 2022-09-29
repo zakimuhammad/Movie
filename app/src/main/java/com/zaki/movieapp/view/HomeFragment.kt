@@ -52,7 +52,7 @@ class HomeFragment: Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
         }
 
-        movieAdapter.onBookmarkClickListener = object : OnMovieClickListener {
+        movieAdapter.onClickListener = object : OnMovieClickListener {
             override fun onClickBookmark(movieTrending: MovieTrending) {
                 viewModel.bookmarkMovie(movieTrending.toEntity())
             }
