@@ -24,9 +24,12 @@ class ProfileViewModel @Inject constructor(
     fun getUser() = viewModelScope.launch(ioDispatcher) {
         _userUiState.emit(ProfileUiState.Loading)
         val username = dataStoreUseCase.getLoginSession().first()
+        val userProfile = localDataSource.getUserLogin(username).first()
 
-        localDataSource.getUserLogin(username)?.let {
-            _userUiState.emit(ProfileUiState.ShowUser(it))
+        if (userProfile != null) {
+            _userUiState.emit(ProfileUiState.ShowUser(userProfile))
+        } else {
+            logout()
         }
     }
 

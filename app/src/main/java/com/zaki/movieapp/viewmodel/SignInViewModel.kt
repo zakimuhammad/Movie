@@ -7,6 +7,7 @@ import com.zaki.movieapp.domain.DataStoreUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,7 +22,7 @@ class SignInViewModel @Inject constructor(
 
     fun checkLogin(userName: String, password: String) = viewModelScope.launch(ioDispatcher) {
         _signInUiState.emit(SignInUiState.Loading)
-        val user = localDataSource.getUserLogin(userName)
+        val user = localDataSource.getUserLogin(userName).first()
 
         if (user != null) {
             if (user.password == password) {
