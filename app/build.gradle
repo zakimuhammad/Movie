@@ -90,7 +90,6 @@ dependencies {
 
     // datastore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
-    implementation("androidx.datastore:datastore-preferences-rxjava3:1.0.0")
 
     testImplementation "io.mockk:mockk:1.13.1"
     testImplementation "com.google.truth:truth:1.1.3"
