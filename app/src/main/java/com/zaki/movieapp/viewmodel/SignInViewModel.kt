@@ -29,10 +29,10 @@ class SignInViewModel @Inject constructor(
                 _signInUiState.emit(SignInUiState.GoToMainActivity)
                 dataStoreUseCase.saveSession(userName)
             } else {
-                _signInUiState.emit(SignInUiState.Failed("Password Salah!"))
+                _signInUiState.emit(SignInUiState.Failed("Username/Password Salah!"))
             }
         } else {
-            _signInUiState.emit(SignInUiState.Failed("User Tidak Ada!"))
+            _signInUiState.emit(SignInUiState.Failed("Username/Password Salah!"))
         }
     }
 
