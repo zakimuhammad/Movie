@@ -1,16 +1,15 @@
-package com.zaki.movieapp.domain
+package com.zaki.movieapp.util
 
 import com.google.common.truth.Truth.assertThat
+import com.zaki.movieapp.util.DateUtil
 import org.junit.Test
 
-class DateUseCaseTest {
-
-    private val dateUseCase = DateUseCase()
+class DateUtilTest {
 
     @Test
     fun testConvertDate() {
         val currentDate = "2022-09-27"
-        val formattedDate = dateUseCase.convertDate(currentDate)
+        val formattedDate = DateUtil.convertDate(currentDate)
 
         assertThat(formattedDate).isEqualTo("27 September 2022")
     }
@@ -18,7 +17,7 @@ class DateUseCaseTest {
     @Test
     fun testErrorDate() {
         val currentDate = ""
-        val formattedDate = dateUseCase.convertDate(currentDate)
+        val formattedDate = DateUtil.convertDate(currentDate)
 
         assertThat(formattedDate).isEqualTo("")
     }

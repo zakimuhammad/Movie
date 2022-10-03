@@ -5,6 +5,7 @@ import com.zaki.movieapp.data.local.entitiy.MovieTrendingEntity
 import com.zaki.movieapp.data.remote.response.MovieTrending
 import com.zaki.movieapp.mapper.MovieMapper.toEntity
 import com.zaki.movieapp.mapper.MovieMapper.toMovieTrending
+import io.mockk.mockkStatic
 import org.junit.Test
 
 class MovieMapperTest {

@@ -7,7 +7,7 @@ import com.zaki.movieapp.MovieApplication
 import com.zaki.movieapp.R
 import com.zaki.movieapp.data.remote.response.MovieTrending
 import com.zaki.movieapp.databinding.ActivityDetailMovieBinding
-import com.zaki.movieapp.domain.DateUseCase
+import com.zaki.movieapp.util.DateUtil
 import javax.inject.Inject
 
 class DetailMovieActivity : AppCompatActivity() {
@@ -20,8 +20,6 @@ class DetailMovieActivity : AppCompatActivity() {
 
     private val movie: MovieTrending?
         get() = intent.getParcelableExtra(MOVIE_EXTRA)
-
-    @Inject lateinit var dateUseCase: DateUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +41,7 @@ class DetailMovieActivity : AppCompatActivity() {
 
         binding.collapsingToolbar.title = movie?.title
         binding.tvOverviewValue.text = movie?.overview
-        binding.tvReleaseDate.text = dateUseCase.convertDate(movie?.releaseDate.orEmpty())
+        binding.tvReleaseDate.text = DateUtil.convertDate(movie?.releaseDate.orEmpty())
         binding.tvVoteAverage.text = String.format("%.1f", movie?.voteAverage)
     }
 

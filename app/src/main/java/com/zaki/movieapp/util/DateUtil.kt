@@ -1,10 +1,10 @@
-package com.zaki.movieapp.domain
+package com.zaki.movieapp.util
 
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-class DateUseCase @Inject constructor() {
+object DateUtil {
 
     fun convertDate(currentDate: String): String {
         return try {
