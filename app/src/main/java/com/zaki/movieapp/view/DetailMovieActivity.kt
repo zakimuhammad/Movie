@@ -2,12 +2,14 @@ package com.zaki.movieapp.view
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.zaki.movieapp.MovieApplication
 import com.zaki.movieapp.R
 import com.zaki.movieapp.data.remote.response.MovieTrending
 import com.zaki.movieapp.databinding.ActivityDetailMovieBinding
 import com.zaki.movieapp.util.DateUtil
+import com.zaki.movieapp.viewmodel.DetailMovieViewModel
 import javax.inject.Inject
 
 class DetailMovieActivity : AppCompatActivity() {
@@ -21,6 +23,8 @@ class DetailMovieActivity : AppCompatActivity() {
     private val movie: MovieTrending?
         get() = intent.getParcelableExtra(MOVIE_EXTRA)
 
+    @Inject lateinit var viewModel: DetailMovieViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -30,6 +34,8 @@ class DetailMovieActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         initView()
+        initClickListener()
+        observeViewModel()
     }
 
     private fun initView() = with(binding) {
@@ -50,5 +56,23 @@ class DetailMovieActivity : AppCompatActivity() {
 
         binding.collapsingToolbar.setExpandedTitleTextAppearance(R.style.TextAppearance_MyApp_Title_Expanded)
         binding.collapsingToolbar.setCollapsedTitleTextAppearance(R.style.TextAppearance_MyApp_Title_Collapsed)
+    }
+
+    private fun initClickListener() {
+        binding.fabFavorite.setOnClickListener {
+            movie?.let { viewModel.updateFavoriteMovie(it) }
+        }
+    }
+
+    private fun observeViewModel() {
+        movie?.let { viewModel.getFavoriteMovie(it) }
+
+        viewModel.favoriteState.observe(this) {
+            if (it) {
+                binding.fabFavorite.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_bookmark_primary))
+            } else {
+                binding.fabFavorite.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_bookmark_border_24))
+            }
+        }
     }
 }

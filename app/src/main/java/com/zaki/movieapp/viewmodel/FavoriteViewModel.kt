@@ -26,8 +26,4 @@ class FavoriteViewModel @Inject constructor(
                 _movies.postValue(it)
             }
     }
-
-    fun bookmarkMovie(movie: MovieTrendingEntity) = viewModelScope.launch(ioDispatcher) {
-        movieRepository.updateMovie(movie.copy(isFavorite = movie.isFavorite.not()))
-    }
 }

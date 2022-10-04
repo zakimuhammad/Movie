@@ -13,6 +13,5 @@ data class MovieTrendingEntity(
     val overview: String? = null,
     @ColumnInfo(name = "release_date") val releaseDate: String? = null,
     @ColumnInfo(name = "poster_path") val posterPath: String? = null,
-    @ColumnInfo(name = "vote_average") val voteAverage: Double? = null,
-    @ColumnInfo(name = "is_favorite") val isFavorite: Boolean = false
+    @ColumnInfo(name = "vote_average") val voteAverage: Double? = null
 )

@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/zakim/AndroidStudioProjects/MovieApp/app/src/main/res/drawable/grad_black.xml" value="0.1005" />
+        <entry key="..\:/Users/zakim/AndroidStudioProjects/MovieApp/app/src/main/res/drawable/ic_heart.xml" value="0.1" />
+        <entry key="..\:/Users/zakim/AndroidStudioProjects/MovieApp/app/src/main/res/drawable/ic_heart_red.xml" value="0.1" />
         <entry key="..\:/Users/zakim/AndroidStudioProjects/MovieApp/app/src/main/res/layout/activity_detail_movie.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/zakim/AndroidStudioProjects/MovieApp/app/src/main/res/layout/activity_sign_in.xml" value="0.1" />
         <entry key="..\:/Users/zakim/AndroidStudioProjects/MovieApp/app/src/main/res/layout/fragment_home.xml" value="0.14666666666666667" />

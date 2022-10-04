@@ -21,16 +21,6 @@ class MovieViewHolder(
             .load("https://image.tmdb.org/t/p/w500/${movie.posterPath}")
             .into(binding.ivMovie)
 
-        val backgroundResource = if (movie.isBookmarked)
-            R.drawable.ic_baseline_bookmark_primary
-        else
-            R.drawable.ic_baseline_bookmark_white
-        binding.buttonFavorite.setBackgroundResource(backgroundResource)
-
-        binding.buttonFavorite.setOnClickListener {
-            onMovieClickListener.onClickBookmark(movie)
-        }
-
         itemView.setOnClickListener {
             onMovieClickListener.onClickItem(movie)
         }

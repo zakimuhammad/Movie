@@ -1,11 +1,13 @@
 package com.zaki.movieapp.data.repository
 
 import com.zaki.movieapp.data.local.dao.MovieDao
+import com.zaki.movieapp.data.local.entitiy.MovieFavoriteEntity
 import com.zaki.movieapp.data.local.entitiy.MovieTrendingEntity
 import com.zaki.movieapp.data.remote.api.MovieApiService
 import com.zaki.movieapp.data.remote.response.MovieTrending
 import com.zaki.movieapp.mapper.MovieMapper.toEntity
 import com.zaki.movieapp.mapper.MovieMapper.toMovieTrending
+import com.zaki.movieapp.util.ConnectivityManager
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
@@ -13,10 +15,15 @@ import javax.inject.Inject
 class MovieRepository @Inject constructor(
     private val movieApiService: MovieApiService,
     private val movieDao: MovieDao,
+    private val connectivityManager: ConnectivityManager
 ) {
 
     fun getMovies(): Observable<List<MovieTrending>> {
-        return getMoviesFromDB()
+        return if (connectivityManager.isHasConnection()) {
+            getMoviesFromApi()
+        } else {
+            getMoviesFromDB()
+        }
     }
 
     private fun getMoviesFromApi(): Observable<List<MovieTrending>> {
@@ -37,21 +44,28 @@ class MovieRepository @Inject constructor(
             .map { movieTrendingEntities ->
                 movieTrendingEntities.map { it.toMovieTrending() }
             }
-            .flatMap {
-                return@flatMap if (it.isEmpty()) getMoviesFromApi()
-                else Observable.just(it)
-            }
     }
 
     fun getFavoriteMovies(): Observable<List<MovieTrending>> {
         return movieDao.getFavoriteMovies()
             .subscribeOn(Schedulers.io())
-            .map { movieTrendingEntities ->
-                movieTrendingEntities.map { it.toMovieTrending() }
+            .map { movies ->
+                movies.map { it.toMovieTrending() }
             }
     }
 
-    suspend fun updateMovie(movie: MovieTrendingEntity) {
-        movieDao.updateMovie(movie)
+    fun getFavoriteMovie(movieId: Int): Observable<List<MovieTrending>> {
+        return movieDao.getFavoriteMovie(movieId)
+            .map { movies ->
+                movies.map { it.toMovieTrending() }
+            }
+    }
+
+    suspend fun insertMovie(movie: MovieFavoriteEntity) {
+        movieDao.insertMovie(movie)
+    }
+
+    suspend fun deleteMovie(movie: MovieFavoriteEntity) {
+        movieDao.deleteMovie(movie)
     }
 }

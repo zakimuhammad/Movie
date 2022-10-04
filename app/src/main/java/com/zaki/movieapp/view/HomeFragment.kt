@@ -14,7 +14,6 @@ import com.zaki.movieapp.MovieApplication
 import com.zaki.movieapp.data.remote.response.MovieTrending
 import com.zaki.movieapp.databinding.FragmentHomeBinding
 import com.zaki.movieapp.helper.OnMovieClickListener
-import com.zaki.movieapp.mapper.MovieMapper.toEntity
 import com.zaki.movieapp.viewmodel.HomeUiState
 import com.zaki.movieapp.viewmodel.HomeViewModel
 import javax.inject.Inject
@@ -53,10 +52,6 @@ class HomeFragment: Fragment() {
         }
 
         movieAdapter.onClickListener = object : OnMovieClickListener {
-            override fun onClickBookmark(movieTrending: MovieTrending) {
-                viewModel.bookmarkMovie(movieTrending.toEntity())
-            }
-
             override fun onClickItem(movieTrending: MovieTrending) {
                 val intent = Intent(requireActivity(), DetailMovieActivity::class.java)
                     .putExtra(DetailMovieActivity.MOVIE_EXTRA, movieTrending)

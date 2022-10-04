@@ -30,10 +30,6 @@ class HomeViewModel @Inject constructor(
                 _homeUiState.postValue(HomeUiState.ShowMovies(it))
             }
     }
-
-    fun bookmarkMovie(movie: MovieTrendingEntity) = viewModelScope.launch(ioDispatcher) {
-        movieRepository.updateMovie(movie.copy(isFavorite = movie.isFavorite.not()))
-    }
 }
 
 sealed class HomeUiState {
