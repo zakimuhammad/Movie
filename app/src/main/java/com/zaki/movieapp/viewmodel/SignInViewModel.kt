@@ -29,10 +29,10 @@ class SignInViewModel @Inject constructor(
                 _signInUiState.emit(SignInUiState.GoToMainActivity)
                 dataStoreUseCase.saveSession(userName)
             } else {
-                _signInUiState.emit(SignInUiState.Failed("Username/Password Salah!"))
+                _signInUiState.emit(SignInUiState.Failed)
             }
         } else {
-            _signInUiState.emit(SignInUiState.Failed("Username/Password Salah!"))
+            _signInUiState.emit(SignInUiState.Failed)
         }
     }
 
@@ -50,5 +50,5 @@ sealed class SignInUiState {
     object Initial: SignInUiState()
     object Loading: SignInUiState()
     object GoToMainActivity: SignInUiState()
-    data class Failed(val message: String): SignInUiState()
+    object Failed: SignInUiState()
 }

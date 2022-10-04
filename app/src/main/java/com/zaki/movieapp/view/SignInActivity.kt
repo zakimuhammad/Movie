@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.zaki.movieapp.MovieApplication
+import com.zaki.movieapp.R
 import com.zaki.movieapp.databinding.ActivitySignInBinding
 import com.zaki.movieapp.viewmodel.SignInUiState
 import com.zaki.movieapp.viewmodel.SignInViewModel
@@ -49,8 +50,8 @@ class SignInActivity : AppCompatActivity() {
         lifecycleScope.launchWhenStarted {
             viewModel.signInUiState.collect { signInUiState ->
                 when(signInUiState) {
-                    is SignInUiState.Failed -> {
-                        Toast.makeText(this@SignInActivity, signInUiState.message, Toast.LENGTH_SHORT).show()
+                    SignInUiState.Failed -> {
+                        Toast.makeText(this@SignInActivity, resources.getString(R.string.sign_in_failed_message), Toast.LENGTH_SHORT).show()
                         binding.progressBar.isVisible = false
                     }
                     SignInUiState.Initial -> {
