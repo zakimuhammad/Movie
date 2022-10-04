@@ -66,9 +66,9 @@ class HomeFragment: Fragment() {
 
         viewModel.homeUiState.observe(viewLifecycleOwner) {
             when(it) {
-                HomeUiState.Error -> {
+                is HomeUiState.Error -> {
                     binding.progressBar.isGone = true
-                    Toast.makeText(requireContext(), "Something Wrong!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
                 }
                 HomeUiState.Initial -> binding.progressBar.isGone = true
                 HomeUiState.Loading -> binding.progressBar.isVisible = true

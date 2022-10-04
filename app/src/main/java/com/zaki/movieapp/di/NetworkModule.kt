@@ -3,9 +3,9 @@ package com.zaki.movieapp.di
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.zaki.movieapp.data.remote.api.MovieApiService
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -20,8 +20,18 @@ class NetworkModule {
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
         val interceptor = HttpLoggingInterceptor()
+            .setLevel(HttpLoggingInterceptor.Level.BODY)
+
+        val header = Interceptor {
+            val request = it.request().newBuilder()
+                .addHeader("Authorization", "Bearer ${MovieApiService.ACCESS_TOKEN}")
+                .build()
+            it.proceed(request)
+        }
+
         return OkHttpClient.Builder()
             .addInterceptor(interceptor)
+            .addInterceptor(header)
             .build()
     }
 

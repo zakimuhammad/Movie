@@ -2,9 +2,9 @@ package com.zaki.movieapp.data.repository
 
 import com.zaki.movieapp.data.local.dao.MovieDao
 import com.zaki.movieapp.data.local.entitiy.MovieFavoriteEntity
-import com.zaki.movieapp.data.local.entitiy.MovieTrendingEntity
 import com.zaki.movieapp.data.remote.api.MovieApiService
 import com.zaki.movieapp.data.remote.response.MovieTrending
+import com.zaki.movieapp.helper.Result
 import com.zaki.movieapp.mapper.MovieMapper.toEntity
 import com.zaki.movieapp.mapper.MovieMapper.toMovieTrending
 import com.zaki.movieapp.util.ConnectivityManager
@@ -18,7 +18,7 @@ class MovieRepository @Inject constructor(
     private val connectivityManager: ConnectivityManager
 ) {
 
-    fun getMovies(): Observable<List<MovieTrending>> {
+    fun getMovies(): Observable<Result<List<MovieTrending>>> {
         return if (connectivityManager.isHasConnection()) {
             getMoviesFromApi()
         } else {
@@ -26,9 +26,14 @@ class MovieRepository @Inject constructor(
         }
     }
 
-    private fun getMoviesFromApi(): Observable<List<MovieTrending>> {
-        return movieApiService.getTrendingMovie(MovieApiService.API_KEY)
-            .map { it.results ?: emptyList() }
+    private fun getMoviesFromApi(): Observable<Result<List<MovieTrending>>> {
+        return movieApiService.getTrendingMovie()
+            .doOnError {
+                Observable.just(Result.Error(it.localizedMessage.orEmpty()) )
+            }
+            .map {
+                it.results ?: emptyList()
+            }
             .map { movies -> movies.map { it.toEntity() } }
             .doOnNext { movies ->
                 movies.forEach {
@@ -36,14 +41,17 @@ class MovieRepository @Inject constructor(
                 }
             }
             .map { movies -> movies.map { it.toMovieTrending() }}
+            .map { Result.Success(it) }
     }
 
-    private fun getMoviesFromDB(): Observable<List<MovieTrending>> {
+    private fun getMoviesFromDB(): Observable<Result<List<MovieTrending>>> {
         return movieDao.getTrendingMovies()
             .subscribeOn(Schedulers.io())
+            .doOnError { Result.Error(it.localizedMessage.orEmpty()) }
             .map { movieTrendingEntities ->
                 movieTrendingEntities.map { it.toMovieTrending() }
             }
+            .map { Result.Success(it) }
     }
 
     fun getFavoriteMovies(): Observable<List<MovieTrending>> {
@@ -56,6 +64,7 @@ class MovieRepository @Inject constructor(
 
     fun getFavoriteMovie(movieId: Int): Observable<List<MovieTrending>> {
         return movieDao.getFavoriteMovie(movieId)
+            .subscribeOn(Schedulers.io())
             .map { movies ->
                 movies.map { it.toMovieTrending() }
             }

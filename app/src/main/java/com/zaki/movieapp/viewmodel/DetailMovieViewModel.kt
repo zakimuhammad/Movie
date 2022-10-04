@@ -24,8 +24,6 @@ class DetailMovieViewModel @Inject constructor(
 
   fun getFavoriteMovie(movieTrending: MovieTrending) {
     movieRepository.getFavoriteMovie(movieTrending.id ?: 0)
-      .subscribeOn(Schedulers.io())
-      .observeOn(AndroidSchedulers.mainThread())
       .subscribe {
         _favoriteState.value = it.isNotEmpty()
       }

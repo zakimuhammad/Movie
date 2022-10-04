@@ -3,19 +3,16 @@ package com.zaki.movieapp.data.remote.api
 import com.zaki.movieapp.data.remote.response.MovieTrendingResponse
 import io.reactivex.rxjava3.core.Observable
 import retrofit2.http.GET
-import retrofit2.http.Query
 
 interface MovieApiService {
 
     companion object {
-        const val API_KEY = "f4cad3ca5afa8146ae803714adbf265b"
+        const val ACCESS_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmNGNhZDNjYTVhZmE4MTQ2YWU4MDM3MTRhZGJmMjY1YiIsInN1YiI6IjVkNmE2ODk4OWQ4OTM5MDAxMjAxNGJkYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.4yzHqW5MiE91Mk6d8tWuJLsuBVqmRhsDrfVu5rkVVCI"
 
         const val GET_TRENDING = "trending/movie/week"
     }
 
     @GET(GET_TRENDING)
-    fun getTrendingMovie(
-        @Query("api_key") apiKey: String
-    ): Observable<MovieTrendingResponse>
+    fun getTrendingMovie(): Observable<MovieTrendingResponse>
 
 }
