@@ -32,7 +32,7 @@ class ProfileFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (activity?.applicationContext as MovieApplication).appComponent.inject(this)
+        (activity?.applicationContext as MovieApplication).appComponent.mainComponent().create().inject(this)
 
         observeViewModel()
         initClickListener()

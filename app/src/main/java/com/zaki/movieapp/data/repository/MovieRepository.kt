@@ -8,6 +8,7 @@ import com.zaki.movieapp.helper.Result
 import com.zaki.movieapp.mapper.MovieMapper.toEntity
 import com.zaki.movieapp.mapper.MovieMapper.toMovieTrending
 import com.zaki.movieapp.util.ConnectivityManager
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
@@ -65,6 +66,7 @@ class MovieRepository @Inject constructor(
     fun getFavoriteMovie(movieId: Int): Observable<List<MovieTrending>> {
         return movieDao.getFavoriteMovie(movieId)
             .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .map { movies ->
                 movies.map { it.toMovieTrending() }
             }

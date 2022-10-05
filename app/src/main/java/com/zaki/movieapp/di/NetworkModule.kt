@@ -17,7 +17,7 @@ import javax.inject.Singleton
 class NetworkModule {
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideOkHttpClient(): OkHttpClient {
         val interceptor = HttpLoggingInterceptor()
             .setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -36,7 +36,7 @@ class NetworkModule {
     }
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideGson(): Gson {
         return GsonBuilder()
             .setLenient()
@@ -44,17 +44,24 @@ class NetworkModule {
     }
 
     @Provides
-    @Singleton
-    fun provideMovieApiService(
+    @ActivityScope
+    fun provideRetrofit(
         gson: Gson,
         okHttpClient: OkHttpClient
-    ): MovieApiService {
+    ): Retrofit {
         return Retrofit.Builder()
             .baseUrl("https://api.themoviedb.org/3/")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
             .build()
-            .create(MovieApiService::class.java)
+    }
+
+    @Provides
+    @ActivityScope
+    fun provideMovieApiService(
+        retrofit: Retrofit
+    ): MovieApiService {
+        return retrofit.create(MovieApiService::class.java)
     }
 }

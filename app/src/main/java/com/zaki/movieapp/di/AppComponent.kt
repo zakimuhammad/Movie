@@ -1,16 +1,23 @@
 package com.zaki.movieapp.di
 
-import com.zaki.movieapp.view.*
+import android.app.Application
+import android.content.Context
+import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [AppModule::class, NetworkModule::class, DatabaseModule::class, DataStoreModule::class])
+@Component(modules = [AppSubcomponents::class, DataStoreModule::class])
 interface AppComponent {
-    fun inject(homeFragment: HomeFragment)
-    fun inject(signUpActivity: SignUpActivity)
-    fun inject(signUpActivity: SignInActivity)
-    fun inject(profileFragment: ProfileFragment)
-    fun inject(favoriteFragment: FavoriteFragment)
-    fun inject(detailMovieActivity: DetailMovieActivity)
+
+    @Component.Factory
+    interface Factory {
+        fun create(
+            @BindsInstance application: Application,
+            @BindsInstance context: Context
+        ): AppComponent
+    }
+
+    fun authComponent(): AuthComponent.Factory
+    fun mainComponent(): MainComponent.Factory
 }

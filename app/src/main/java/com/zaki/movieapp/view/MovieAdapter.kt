@@ -8,7 +8,7 @@ import com.zaki.movieapp.databinding.ItemMovieBinding
 import com.zaki.movieapp.helper.OnMovieClickListener
 import javax.inject.Inject
 
-class MovieAdapter @Inject constructor(): RecyclerView.Adapter<MovieViewHolder>() {
+class MovieAdapter: RecyclerView.Adapter<MovieViewHolder>() {
 
     private val movies = mutableListOf<MovieTrending>()
 

@@ -13,17 +13,17 @@ import javax.inject.Singleton
 class DatabaseModule {
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideMovieDatabase(application: Application): MovieDatabase {
         return Room.databaseBuilder(application, MovieDatabase::class.java, "movie_database.db")
             .build()
     }
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideMovieDao(database: MovieDatabase): MovieDao = database.movieDao()
 
     @Provides
-    @Singleton
+    @ActivityScope
     fun provideAuthDao(database: MovieDatabase): AuthDao = database.authDao()
 }

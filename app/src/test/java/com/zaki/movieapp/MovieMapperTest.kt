@@ -18,8 +18,7 @@ class MovieMapperTest {
             overview = "Cool Movie",
             releaseDate = "2022-09-26",
             posterPath = "google.com",
-            voteAverage = 8.9,
-            isBookmarked = false
+            voteAverage = 8.9
         )
         val movieEntity = movie.toEntity()
 
@@ -30,7 +29,6 @@ class MovieMapperTest {
         assert(movie.releaseDate == movieEntity.releaseDate)
         assert(movie.posterPath == movieEntity.posterPath)
         assert(movie.voteAverage == movieEntity.voteAverage)
-        assert(movie.isBookmarked == movieEntity.isFavorite)
     }
 
     @Test
@@ -41,8 +39,7 @@ class MovieMapperTest {
             overview = "Cool Movie",
             releaseDate = "2022-09-26",
             posterPath = "google.com",
-            voteAverage = 8.9,
-            isFavorite = false
+            voteAverage = 8.9
         )
         val movieTrending = movieEntity.toMovieTrending()
 
@@ -53,6 +50,5 @@ class MovieMapperTest {
         assert(movieEntity.releaseDate == movieTrending.releaseDate)
         assert(movieEntity.posterPath == movieTrending.posterPath)
         assert(movieEntity.voteAverage == movieTrending.voteAverage)
-        assert(movieEntity.isFavorite == movieTrending.isBookmarked)
     }
 }

@@ -28,7 +28,7 @@ class DetailMovieActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        (applicationContext as MovieApplication).appComponent.inject(this)
+        (applicationContext as MovieApplication).appComponent.mainComponent().create().inject(this)
 
         binding = ActivityDetailMovieBinding.inflate(layoutInflater)
         setContentView(binding.root)

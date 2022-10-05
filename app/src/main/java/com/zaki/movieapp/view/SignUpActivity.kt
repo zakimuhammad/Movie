@@ -21,7 +21,7 @@ class SignUpActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        (applicationContext as MovieApplication).appComponent.inject(this)
+        (applicationContext as MovieApplication).appComponent.authComponent().create().inject(this)
 
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
