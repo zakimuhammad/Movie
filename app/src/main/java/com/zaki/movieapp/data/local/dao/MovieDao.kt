@@ -11,7 +11,7 @@ interface MovieDao {
     fun getTrendingMovies(): Observable<List<MovieTrendingEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertMovies(movies: MovieTrendingEntity)
+    suspend fun insertMovies(movies: List<MovieTrendingEntity>)
 
     @Query("SELECT * FROM movie_favorites")
     fun getFavoriteMovies(): Observable<List<MovieFavoriteEntity>>

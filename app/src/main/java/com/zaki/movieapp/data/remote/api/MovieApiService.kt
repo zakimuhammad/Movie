@@ -1,7 +1,7 @@
 package com.zaki.movieapp.data.remote.api
 
 import com.zaki.movieapp.data.remote.response.MovieTrendingResponse
-import io.reactivex.rxjava3.core.Observable
+import retrofit2.Call
 import retrofit2.http.GET
 
 interface MovieApiService {
@@ -13,6 +13,6 @@ interface MovieApiService {
     }
 
     @GET(GET_TRENDING)
-    fun getTrendingMovie(): Observable<MovieTrendingResponse>
+    fun getTrendingMovie(): Call<MovieTrendingResponse>
 
 }

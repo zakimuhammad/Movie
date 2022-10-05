@@ -1,9 +1,12 @@
 package com.zaki.movieapp.data.repository
 
+import com.google.gson.Gson
 import com.zaki.movieapp.data.local.dao.MovieDao
 import com.zaki.movieapp.data.local.entitiy.MovieFavoriteEntity
 import com.zaki.movieapp.data.remote.api.MovieApiService
 import com.zaki.movieapp.data.remote.response.MovieTrending
+import com.zaki.movieapp.data.remote.response.MovieTrendingResponse
+import com.zaki.movieapp.helper.ResponseError
 import com.zaki.movieapp.helper.Result
 import com.zaki.movieapp.mapper.MovieMapper.toEntity
 import com.zaki.movieapp.mapper.MovieMapper.toMovieTrending
@@ -11,12 +14,17 @@ import com.zaki.movieapp.util.ConnectivityManager
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import javax.inject.Inject
 
 class MovieRepository @Inject constructor(
     private val movieApiService: MovieApiService,
     private val movieDao: MovieDao,
-    private val connectivityManager: ConnectivityManager
+    private val connectivityManager: ConnectivityManager,
+    private val gson: Gson
 ) {
 
     fun getMovies(): Observable<Result<List<MovieTrending>>> {
@@ -28,27 +36,45 @@ class MovieRepository @Inject constructor(
     }
 
     private fun getMoviesFromApi(): Observable<Result<List<MovieTrending>>> {
-        return movieApiService.getTrendingMovie()
-            .doOnError {
-                Observable.just(Result.Error(it.localizedMessage.orEmpty()) )
+        return try {
+            Observable.create {
+                it.onNext(Result.Loading)
+                val response = movieApiService.getTrendingMovie()
+                response.enqueue(object : Callback<MovieTrendingResponse> {
+                    override fun onResponse(
+                        call: Call<MovieTrendingResponse>,
+                        response: Response<MovieTrendingResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            val movies = response.body()?.results ?: emptyList()
+                            it.onNext(Result.Success(movies))
+                        } else {
+                            val jsonObject = JSONObject(response.errorBody()?.string()!!)
+                            val responseError = gson.fromJson(jsonObject.toString(), ResponseError::class.java)
+                            it.onNext(Result.Error(responseError.statusMessage.orEmpty()))
+                        }
+                    }
+
+                    override fun onFailure(call: Call<MovieTrendingResponse>, t: Throwable) {
+                        it.onNext(Result.Error(t.message.orEmpty()))
+                    }
+                })
             }
-            .map {
-                it.results ?: emptyList()
-            }
-            .map { movies -> movies.map { it.toEntity() } }
-            .doOnNext { movies ->
-                movies.forEach {
-                    movieDao.insertMovies(it)
-                }
-            }
-            .map { movies -> movies.map { it.toMovieTrending() }}
-            .map { Result.Success(it) }
+        } catch (t: Throwable) {
+            Observable.just(Result.Error(t.message.orEmpty()))
+        }
+    }
+
+    suspend fun insertMovies(movies: List<MovieTrending>) {
+        if (connectivityManager.isHasConnection()) {
+            val moviesEntity = movies.map { it.toEntity() }
+            movieDao.insertMovies(moviesEntity)
+        }
     }
 
     private fun getMoviesFromDB(): Observable<Result<List<MovieTrending>>> {
         return movieDao.getTrendingMovies()
             .subscribeOn(Schedulers.io())
-            .doOnError { Result.Error(it.localizedMessage.orEmpty()) }
             .map { movieTrendingEntities ->
                 movieTrendingEntities.map { it.toMovieTrending() }
             }
