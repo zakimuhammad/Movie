@@ -6,7 +6,7 @@ import com.zaki.movieapp.data.local.entitiy.MovieFavoriteEntity
 import com.zaki.movieapp.data.remote.api.MovieApiService
 import com.zaki.movieapp.data.remote.response.MovieTrending
 import com.zaki.movieapp.data.remote.response.MovieTrendingResponse
-import com.zaki.movieapp.helper.ResponseError
+import com.zaki.movieapp.data.remote.response.ErrorResponse
 import com.zaki.movieapp.helper.Result
 import com.zaki.movieapp.mapper.MovieMapper.toEntity
 import com.zaki.movieapp.mapper.MovieMapper.toMovieTrending
@@ -37,8 +37,8 @@ class MovieRepository @Inject constructor(
 
     private fun getMoviesFromApi(): Observable<Result<List<MovieTrending>>> {
         return try {
-            Observable.create {
-                it.onNext(Result.Loading)
+            Observable.create { emitter ->
+                emitter.onNext(Result.Loading)
                 val response = movieApiService.getTrendingMovie()
                 response.enqueue(object : Callback<MovieTrendingResponse> {
                     override fun onResponse(
@@ -47,16 +47,18 @@ class MovieRepository @Inject constructor(
                     ) {
                         if (response.isSuccessful) {
                             val movies = response.body()?.results ?: emptyList()
-                            it.onNext(Result.Success(movies))
+                            emitter.onNext(Result.Success(movies))
                         } else {
-                            val jsonObject = JSONObject(response.errorBody()?.string()!!)
-                            val responseError = gson.fromJson(jsonObject.toString(), ResponseError::class.java)
-                            it.onNext(Result.Error(responseError.statusMessage.orEmpty()))
+                            response.errorBody()?.let {
+                                val jsonObject = JSONObject(it.string())
+                                val responseError = gson.fromJson(jsonObject.toString(), ErrorResponse::class.java)
+                                emitter.onNext(Result.Error(responseError.statusMessage.orEmpty()))
+                            }
                         }
                     }
 
                     override fun onFailure(call: Call<MovieTrendingResponse>, t: Throwable) {
-                        it.onNext(Result.Error(t.message.orEmpty()))
+                        emitter.onNext(Result.Error(t.message.orEmpty()))
                     }
                 })
             }
