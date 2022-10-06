@@ -19,6 +19,7 @@ class HomeViewModel @Inject constructor(
   val homeUiState: LiveData<HomeUiState> = _homeUiState
 
   fun getMovies() {
+    _homeUiState.postValue(HomeUiState.Loading)
     movieRepository.getMovies().subscribe({ result ->
         when (result) {
           is Result.Error -> {
@@ -28,7 +29,6 @@ class HomeViewModel @Inject constructor(
             _homeUiState.postValue(HomeUiState.ShowMovies(result.data))
             insertMovie(result.data)
           }
-          Result.Loading -> _homeUiState.postValue(HomeUiState.Loading)
         }
       }, { error ->
         _homeUiState.postValue(HomeUiState.Error(error.message.orEmpty()))

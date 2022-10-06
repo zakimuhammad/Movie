@@ -18,33 +18,16 @@ class RemoteDataSource @Inject constructor(
 ) {
 
   fun getMoviesFromApi(): Observable<Result<List<MovieTrending>>> {
-    return try {
-      Observable.create { emitter ->
-        emitter.onNext(Result.Loading)
-        val response = movieApiService.getTrendingMovie()
-        response.enqueue(object : Callback<MovieTrendingResponse> {
-          override fun onResponse(
-            call: Call<MovieTrendingResponse>, response: Response<MovieTrendingResponse>
-          ) {
-            if (response.isSuccessful) {
-              val movies = response.body()?.results ?: emptyList()
-              emitter.onNext(Result.Success(movies))
-            } else {
-              response.errorBody()?.let {
-                val jsonObject = JSONObject(it.string())
-                val responseError = gson.fromJson(jsonObject.toString(), ErrorResponse::class.java)
-                emitter.onNext(Result.Error(responseError.statusMessage.orEmpty()))
-              }
-            }
-          }
-
-          override fun onFailure(call: Call<MovieTrendingResponse>, t: Throwable) {
-            emitter.onNext(Result.Error(t.message.orEmpty()))
-          }
-        })
+    return movieApiService.getTrendingMovie()
+      .map {
+        if (it.isSuccessful) {
+          val movies = it.body()?.results ?: emptyList()
+          Result.Success(movies)
+        } else {
+          val jsonObject = JSONObject(it.errorBody()?.string())
+          val responseError = gson.fromJson(jsonObject.toString(), ErrorResponse::class.java)
+          Result.Error(responseError.statusMessage.orEmpty())
+        }
       }
-    } catch (t: Throwable) {
-      Observable.just(Result.Error(t.message.orEmpty()))
-    }
   }
 }
