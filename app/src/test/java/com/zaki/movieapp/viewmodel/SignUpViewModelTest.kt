@@ -7,6 +7,7 @@ import com.zaki.movieapp.data.local.entitiy.AuthEntity
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.coJustRun
+import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -53,5 +54,9 @@ class SignUpViewModelTest {
 
         viewModel.insertUser(authEntity)
         assertThat(viewModel.signUpUiState.value).isEqualTo(SignUpUIState.GoToSignInActivity)
+
+        coVerify {
+            localDataSource.insertUser(any())
+        }
     }
 }

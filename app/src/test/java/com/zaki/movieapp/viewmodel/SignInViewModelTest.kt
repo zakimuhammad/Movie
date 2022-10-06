@@ -85,7 +85,7 @@ class SignInViewModelTest {
 
         viewModel.checkLogin(userName = authEntity.userName, password = "123456")
 
-        assertThat(viewModel.signInUiState.value).isEqualTo(SignInUiState.Failed("Password Salah!"))
+        assertThat(viewModel.signInUiState.value).isEqualTo(SignInUiState.Failed)
     }
 
     @Test
@@ -94,6 +94,6 @@ class SignInViewModelTest {
 
         viewModel.checkLogin(userName = "zaki", password = "123456")
 
-        assertThat(viewModel.signInUiState.value).isEqualTo(SignInUiState.Failed("User Tidak Ada!"))
+        assertThat(viewModel.signInUiState.value).isEqualTo(SignInUiState.Failed)
     }
 }

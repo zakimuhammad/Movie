@@ -4,9 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth.assertThat
 import com.zaki.movieapp.data.remote.response.MovieTrending
 import com.zaki.movieapp.data.repository.MovieRepository
-import io.mockk.MockKAnnotations
-import io.mockk.clearAllMocks
-import io.mockk.every
+import com.zaki.movieapp.helper.Result
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.reactivex.rxjava3.core.Observable
 import kotlinx.coroutines.Dispatchers
@@ -52,21 +51,26 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `given data when call getMovies then homeUiState value should success with data`() {
+    fun `given data when call getMovies then homeUiState value should success with data and verify insert movie called`() {
         val data = listOf(MovieTrending(id = 132), MovieTrending(id = 9213))
         every { movieRepository.getMovies() } returns Observable.create {
-            it.onNext(data)
+            it.onNext(Result.Success(data))
         }
 
         viewModel.getMovies()
 
         assertThat(viewModel.homeUiState.value).isEqualTo(HomeUiState.ShowMovies(data))
+
+        coVerify {
+            movieRepository.insertMovies(any())
+            movieRepository.getMovies()
+        }
     }
 
     @Test
     fun `given nothing when call getMovies then homeUiState value should loading`() {
         every { movieRepository.getMovies() } returns Observable.create {
-            it.onComplete()
+            it.onNext(Result.Loading)
         }
 
         viewModel.getMovies()
@@ -77,11 +81,11 @@ class HomeViewModelTest {
     @Test
     fun `given error when call getMovies then homeUiState value should error`() {
         every { movieRepository.getMovies() } returns Observable.create {
-            it.onError(Throwable())
+            it.onNext(Result.Error("Something Wrong"))
         }
 
         viewModel.getMovies()
 
-        assertThat(viewModel.homeUiState.value).isEqualTo(HomeUiState.Error)
+        assertThat(viewModel.homeUiState.value).isEqualTo(HomeUiState.Error("Something Wrong"))
     }
 }

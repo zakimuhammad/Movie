@@ -5,10 +5,7 @@ import com.google.common.truth.Truth.assertThat
 import com.zaki.movieapp.data.local.LocalDataSource
 import com.zaki.movieapp.data.local.entitiy.AuthEntity
 import com.zaki.movieapp.domain.DataStoreUseCase
-import io.mockk.MockKAnnotations
-import io.mockk.clearAllMocks
-import io.mockk.coJustRun
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.flowOf
@@ -77,5 +74,10 @@ class ProfileViewModelTest {
         viewModel.logout()
 
         assertThat(viewModel.userUiState.value).isEqualTo(ProfileUiState.GoToLoginActivity)
+
+        coVerify {
+            viewModel.logout()
+            sessionUseCase.saveSession(any())
+        }
     }
 }
