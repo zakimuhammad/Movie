@@ -7,23 +7,15 @@ import com.zaki.movieapp.data.local.dao.AuthDao
 import com.zaki.movieapp.data.local.dao.MovieDao
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
-@Module
-class DatabaseModule {
+@Module class DatabaseModule {
 
-    @Provides
-    @ActivityScope
-    fun provideMovieDatabase(application: Application): MovieDatabase {
-        return Room.databaseBuilder(application, MovieDatabase::class.java, "movie_database.db")
-            .build()
-    }
+  @Provides @ActivityScope fun provideMovieDatabase(application: Application): MovieDatabase {
+    return Room.databaseBuilder(application, MovieDatabase::class.java, "movie_database.db").build()
+  }
 
-    @Provides
-    @ActivityScope
-    fun provideMovieDao(database: MovieDatabase): MovieDao = database.movieDao()
+  @Provides @ActivityScope fun provideMovieDao(database: MovieDatabase): MovieDao =
+    database.movieDao()
 
-    @Provides
-    @ActivityScope
-    fun provideAuthDao(database: MovieDatabase): AuthDao = database.authDao()
+  @Provides @ActivityScope fun provideAuthDao(database: MovieDatabase): AuthDao = database.authDao()
 }

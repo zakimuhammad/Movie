@@ -20,43 +20,37 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 
-@ExperimentalCoroutinesApi
-class SignUpViewModelTest {
+@ExperimentalCoroutinesApi class SignUpViewModelTest {
 
-    @get:Rule
-    var testRule: TestRule = InstantTaskExecutorRule()
+  @get:Rule var testRule: TestRule = InstantTaskExecutorRule()
 
-    @MockK
-    lateinit var localDataSource: LocalDataSource
+  @MockK lateinit var localDataSource: LocalDataSource
 
-    private lateinit var viewModel: SignUpViewModel
+  private lateinit var viewModel: SignUpViewModel
 
-    private val testDispatcher = UnconfinedTestDispatcher()
+  private val testDispatcher = UnconfinedTestDispatcher()
 
-    @Before
-    fun setUp() {
-        MockKAnnotations.init(this)
-        Dispatchers.setMain(testDispatcher)
-        viewModel = SignUpViewModel(localDataSource, testDispatcher)
+  @Before fun setUp() {
+    MockKAnnotations.init(this)
+    Dispatchers.setMain(testDispatcher)
+    viewModel = SignUpViewModel(localDataSource, testDispatcher)
+  }
+
+  @After fun tearDown() {
+    Dispatchers.resetMain()
+    clearAllMocks()
+  }
+
+  @Test fun `call insertUser then signUpUiState should GoToSignInActivity`() {
+    val authEntity = AuthEntity(userName = "zaki", password = "12345", name = "Zaki Mukhammad")
+
+    coJustRun { localDataSource.insertUser(authEntity) }
+
+    viewModel.insertUser(authEntity)
+    assertThat(viewModel.signUpUiState.value).isEqualTo(SignUpUIState.GoToSignInActivity)
+
+    coVerify {
+      localDataSource.insertUser(any())
     }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-        clearAllMocks()
-    }
-
-    @Test
-    fun `call insertUser then signUpUiState should GoToSignInActivity`() {
-        val authEntity = AuthEntity(userName = "zaki", password = "12345", name = "Zaki Mukhammad")
-
-        coJustRun { localDataSource.insertUser(authEntity) }
-
-        viewModel.insertUser(authEntity)
-        assertThat(viewModel.signUpUiState.value).isEqualTo(SignUpUIState.GoToSignInActivity)
-
-        coVerify {
-            localDataSource.insertUser(any())
-        }
-    }
+  }
 }

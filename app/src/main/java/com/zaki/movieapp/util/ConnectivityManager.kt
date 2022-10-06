@@ -10,10 +10,12 @@ class ConnectivityManager @Inject constructor(
   private val context: Context
 ) {
   fun isHasConnection(): Boolean {
-    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val connectivityManager =
+      context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       val activeNetwork = connectivityManager.activeNetwork ?: return false
-      val networkCapabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
+      val networkCapabilities =
+        connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
       return when {
         networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
         networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true

@@ -15,32 +15,26 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 
-@ExperimentalCoroutinesApi
-class DetailMovieViewModelTest {
+@ExperimentalCoroutinesApi class DetailMovieViewModelTest {
 
-  @get:Rule
-  var testRule: TestRule = InstantTaskExecutorRule()
+  @get:Rule var testRule: TestRule = InstantTaskExecutorRule()
 
-  @MockK
-  lateinit var movieRepository: MovieRepository
+  @MockK lateinit var movieRepository: MovieRepository
 
   private lateinit var viewModel: DetailMovieViewModel
 
   private val testDispatcher = UnconfinedTestDispatcher()
 
-  @Before
-  fun setup() {
+  @Before fun setup() {
     MockKAnnotations.init(this)
     viewModel = DetailMovieViewModel(movieRepository, testDispatcher)
   }
 
-  @After
-  fun tearDown() {
+  @After fun tearDown() {
     clearAllMocks()
   }
 
-  @Test
-  fun `given data when call get favorite then favoriteState should true`() {
+  @Test fun `given data when call get favorite then favoriteState should true`() {
     every { movieRepository.getFavoriteMovie(any()) } returns Observable.create {
       it.onNext(listOf(MovieTrending()))
     }
@@ -52,8 +46,7 @@ class DetailMovieViewModelTest {
     verify { movieRepository.getFavoriteMovie(any()) }
   }
 
-  @Test
-  fun `given empty data when call get favorite then favoriteState should false`() {
+  @Test fun `given empty data when call get favorite then favoriteState should false`() {
     every { movieRepository.getFavoriteMovie(any()) } returns Observable.create {
       it.onNext(listOf())
     }

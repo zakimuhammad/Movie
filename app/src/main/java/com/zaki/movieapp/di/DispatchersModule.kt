@@ -5,10 +5,7 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-@Module
-class DispatchersModule {
+@Module class DispatchersModule {
 
-    @Provides
-    @ActivityScope
-    fun provideDispatchersIo(): CoroutineDispatcher = Dispatchers.IO
+  @Provides @ActivityScope fun provideDispatchersIo(): CoroutineDispatcher = Dispatchers.IO
 }

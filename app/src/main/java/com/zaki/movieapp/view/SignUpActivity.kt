@@ -14,66 +14,64 @@ import javax.inject.Inject
 
 class SignUpActivity : AppCompatActivity() {
 
-    lateinit var  binding: ActivitySignUpBinding
+  lateinit var binding: ActivitySignUpBinding
 
-    @Inject lateinit var viewModel: SignUpViewModel
+  @Inject lateinit var viewModel: SignUpViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
 
-        (applicationContext as MovieApplication).appComponent.authComponent().create().inject(this)
+    (applicationContext as MovieApplication).appComponent.authComponent().create().inject(this)
 
-        binding = ActivitySignUpBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    binding = ActivitySignUpBinding.inflate(layoutInflater)
+    setContentView(binding.root)
 
-        initClickListener()
-        collectState()
+    initClickListener()
+    collectState()
+  }
+
+  private fun initClickListener() {
+    binding.buttonLogin.setOnClickListener {
+      val intent = Intent(this, SignInActivity::class.java).apply {
+        addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+      }
+      startActivity(intent)
     }
 
-    private fun initClickListener() {
-        binding.buttonLogin.setOnClickListener {
-            val intent = Intent(this, SignInActivity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+    binding.buttonRegister.setOnClickListener {
+      val name = binding.outlineTextName.editText?.text.toString()
+      val username = binding.outlineTextUsername.editText?.text.toString()
+      val password = binding.outlineTextPassword.editText?.text.toString()
+
+      if (name.isNotEmpty() && username.isNotEmpty() && password.isNotEmpty()) {
+        val authEntity = AuthEntity(
+          name = name, userName = username, password = password
+        )
+        viewModel.insertUser(authEntity)
+      }
+    }
+  }
+
+  private fun collectState() {
+    lifecycleScope.launchWhenStarted {
+      viewModel.signUpUiState.collect { signUpUiState ->
+        when (signUpUiState) {
+          SignUpUIState.GoToSignInActivity -> {
+            val intent = Intent(this@SignUpActivity, SignInActivity::class.java).apply {
+              addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             }
             startActivity(intent)
+          }
+          SignUpUIState.Initial -> {
+            binding.buttonRegister.isEnabled = true
+            binding.progressBar.isVisible = false
+          }
+          SignUpUIState.Loading -> {
+            binding.buttonRegister.isEnabled = false
+            binding.progressBar.isVisible = true
+          }
         }
-
-        binding.buttonRegister.setOnClickListener {
-            val name = binding.outlineTextName.editText?.text.toString()
-            val username = binding.outlineTextUsername.editText?.text.toString()
-            val password = binding.outlineTextPassword.editText?.text.toString()
-
-            if (name.isNotEmpty() && username.isNotEmpty() && password.isNotEmpty()) {
-                val authEntity = AuthEntity(
-                    name = name,
-                    userName = username,
-                    password = password
-                )
-                viewModel.insertUser(authEntity)
-            }
-        }
+      }
     }
-
-    private fun collectState() {
-        lifecycleScope.launchWhenStarted {
-            viewModel.signUpUiState.collect { signUpUiState ->
-                when(signUpUiState) {
-                    SignUpUIState.GoToSignInActivity -> {
-                        val intent = Intent(this@SignUpActivity, SignInActivity::class.java).apply {
-                            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        }
-                        startActivity(intent)
-                    }
-                    SignUpUIState.Initial -> {
-                        binding.buttonRegister.isEnabled = true
-                        binding.progressBar.isVisible = false
-                    }
-                    SignUpUIState.Loading -> {
-                        binding.buttonRegister.isEnabled = false
-                        binding.progressBar.isVisible = true
-                    }
-                }
-            }
-        }
-    }
+  }
 }

@@ -9,10 +9,9 @@ import com.zaki.movieapp.data.local.entitiy.MovieFavoriteEntity
 import com.zaki.movieapp.data.local.entitiy.MovieTrendingEntity
 
 @Database(
-    entities = [MovieTrendingEntity::class, AuthEntity::class, MovieFavoriteEntity::class],
-    version = 1
-)
-abstract class MovieDatabase: RoomDatabase() {
-    abstract fun movieDao(): MovieDao
-    abstract fun authDao(): AuthDao
+  entities = [MovieTrendingEntity::class, AuthEntity::class, MovieFavoriteEntity::class],
+  version = 1
+) abstract class MovieDatabase : RoomDatabase() {
+  abstract fun movieDao(): MovieDao
+  abstract fun authDao(): AuthDao
 }

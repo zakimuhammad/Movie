@@ -15,53 +15,45 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class LocalDataSource @Inject constructor(
-    private val authDao: AuthDao,
-    private val movieDao: MovieDao
+  private val authDao: AuthDao, private val movieDao: MovieDao
 ) {
 
-    suspend fun insertUser(authEntity: AuthEntity) {
-        authDao.insertUser(authEntity)
-    }
+  suspend fun insertUser(authEntity: AuthEntity) {
+    authDao.insertUser(authEntity)
+  }
 
-    fun getUserLogin(username: String): Flow<AuthEntity?> {
-        return authDao.getUser(username)
-    }
+  fun getUserLogin(username: String): Flow<AuthEntity?> {
+    return authDao.getUser(username)
+  }
 
-    fun getMoviesFromDB(): Observable<Result<List<MovieTrending>>> {
-        return movieDao.getTrendingMovies()
-            .subscribeOn(Schedulers.io())
-            .map { movieTrendingEntities ->
-                movieTrendingEntities.map { it.toMovieTrending() }
-            }
-            .map { Result.Success(it) }
-    }
+  fun getMoviesFromDB(): Observable<Result<List<MovieTrending>>> {
+    return movieDao.getTrendingMovies().subscribeOn(Schedulers.io()).map { movieTrendingEntities ->
+        movieTrendingEntities.map { it.toMovieTrending() }
+      }.map { Result.Success(it) }
+  }
 
-    suspend fun insertMovies(movies: List<MovieTrendingEntity>) {
-        movieDao.insertMovies(movies)
-    }
+  suspend fun insertMovies(movies: List<MovieTrendingEntity>) {
+    movieDao.insertMovies(movies)
+  }
 
-    fun getFavoriteMovies(): Observable<List<MovieTrending>> {
-        return movieDao.getFavoriteMovies()
-            .subscribeOn(Schedulers.io())
-            .map { movies ->
-                movies.map { it.toMovieTrending() }
-            }
-    }
+  fun getFavoriteMovies(): Observable<List<MovieTrending>> {
+    return movieDao.getFavoriteMovies().subscribeOn(Schedulers.io()).map { movies ->
+        movies.map { it.toMovieTrending() }
+      }
+  }
 
-    fun getFavoriteMovie(movieId: Int): Observable<List<MovieTrending>> {
-        return movieDao.getFavoriteMovie(movieId)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .map { movies ->
-                movies.map { it.toMovieTrending() }
-            }
-    }
+  fun getFavoriteMovie(movieId: Int): Observable<List<MovieTrending>> {
+    return movieDao.getFavoriteMovie(movieId).subscribeOn(Schedulers.io())
+      .observeOn(AndroidSchedulers.mainThread()).map { movies ->
+        movies.map { it.toMovieTrending() }
+      }
+  }
 
-    suspend fun insertMovie(movie: MovieFavoriteEntity) {
-        movieDao.insertMovie(movie)
-    }
+  suspend fun insertMovie(movie: MovieFavoriteEntity) {
+    movieDao.insertMovie(movie)
+  }
 
-    suspend fun deleteMovie(movie: MovieFavoriteEntity) {
-        movieDao.deleteMovie(movie)
-    }
+  suspend fun deleteMovie(movie: MovieFavoriteEntity) {
+    movieDao.deleteMovie(movie)
+  }
 }

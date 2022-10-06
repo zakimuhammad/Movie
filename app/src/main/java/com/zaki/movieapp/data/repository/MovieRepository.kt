@@ -11,47 +11,47 @@ import io.reactivex.rxjava3.core.Observable
 import javax.inject.Inject
 
 class MovieRepository @Inject constructor(
-    private val remoteDataSource: RemoteDataSource,
-    private val localDataSource: LocalDataSource,
-    private val connectivityManager: ConnectivityManager,
+  private val remoteDataSource: RemoteDataSource,
+  private val localDataSource: LocalDataSource,
+  private val connectivityManager: ConnectivityManager,
 ) {
 
-    fun getMovies(): Observable<Result<List<MovieTrending>>> {
-        return if (connectivityManager.isHasConnection()) {
-            getMoviesFromApi()
-        } else {
-            getMoviesFromDB()
-        }
+  fun getMovies(): Observable<Result<List<MovieTrending>>> {
+    return if (connectivityManager.isHasConnection()) {
+      getMoviesFromApi()
+    } else {
+      getMoviesFromDB()
     }
+  }
 
-    private fun getMoviesFromApi(): Observable<Result<List<MovieTrending>>> {
-        return remoteDataSource.getMoviesFromApi()
-    }
+  private fun getMoviesFromApi(): Observable<Result<List<MovieTrending>>> {
+    return remoteDataSource.getMoviesFromApi()
+  }
 
-    suspend fun insertMovies(movies: List<MovieTrending>) {
-        if (connectivityManager.isHasConnection()) {
-            val moviesEntity = movies.map { it.toEntity() }
-            localDataSource.insertMovies(moviesEntity)
-        }
+  suspend fun insertMovies(movies: List<MovieTrending>) {
+    if (connectivityManager.isHasConnection()) {
+      val moviesEntity = movies.map { it.toEntity() }
+      localDataSource.insertMovies(moviesEntity)
     }
+  }
 
-    private fun getMoviesFromDB(): Observable<Result<List<MovieTrending>>> {
-        return localDataSource.getMoviesFromDB()
-    }
+  private fun getMoviesFromDB(): Observable<Result<List<MovieTrending>>> {
+    return localDataSource.getMoviesFromDB()
+  }
 
-    fun getFavoriteMovies(): Observable<List<MovieTrending>> {
-        return localDataSource.getFavoriteMovies()
-    }
+  fun getFavoriteMovies(): Observable<List<MovieTrending>> {
+    return localDataSource.getFavoriteMovies()
+  }
 
-    fun getFavoriteMovie(movieId: Int): Observable<List<MovieTrending>> {
-        return localDataSource.getFavoriteMovie(movieId)
-    }
+  fun getFavoriteMovie(movieId: Int): Observable<List<MovieTrending>> {
+    return localDataSource.getFavoriteMovie(movieId)
+  }
 
-    suspend fun insertMovie(movie: MovieFavoriteEntity) {
-        localDataSource.insertMovie(movie)
-    }
+  suspend fun insertMovie(movie: MovieFavoriteEntity) {
+    localDataSource.insertMovie(movie)
+  }
 
-    suspend fun deleteMovie(movie: MovieFavoriteEntity) {
-        localDataSource.deleteMovie(movie)
-    }
+  suspend fun deleteMovie(movie: MovieFavoriteEntity) {
+    localDataSource.deleteMovie(movie)
+  }
 }

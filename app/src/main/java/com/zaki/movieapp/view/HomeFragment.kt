@@ -18,65 +18,65 @@ import com.zaki.movieapp.viewmodel.HomeUiState
 import com.zaki.movieapp.viewmodel.HomeViewModel
 import javax.inject.Inject
 
-class HomeFragment: Fragment() {
+class HomeFragment : Fragment() {
 
-    @Inject
-    lateinit var viewModel: HomeViewModel
-    @Inject
-    lateinit var movieAdapter: MovieAdapter
+  @Inject lateinit var viewModel: HomeViewModel
 
-    private lateinit var binding: FragmentHomeBinding
+  @Inject lateinit var movieAdapter: MovieAdapter
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentHomeBinding.inflate(inflater, container, false)
-        return binding.root
+  private lateinit var binding: FragmentHomeBinding
+
+  override fun onCreateView(
+    inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+  ): View {
+    binding = FragmentHomeBinding.inflate(inflater, container, false)
+    return binding.root
+  }
+
+  override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+
+    (activity?.applicationContext as MovieApplication).appComponent.mainComponent().create()
+      .inject(this)
+
+    setupAdapter()
+    observeViewModel()
+  }
+
+  private fun setupAdapter() {
+    binding.rvMovie.apply {
+      adapter = this@HomeFragment.movieAdapter
+      layoutManager = LinearLayoutManager(requireContext())
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    movieAdapter.onClickListener = object : OnMovieClickListener {
+      override fun onClickItem(movieTrending: MovieTrending) {
+        val intent = Intent(
+          requireActivity(),
+          DetailMovieActivity::class.java
+        ).putExtra(DetailMovieActivity.MOVIE_EXTRA, movieTrending)
 
-        (activity?.applicationContext as MovieApplication).appComponent.mainComponent().create().inject(this)
-
-        setupAdapter()
-        observeViewModel()
+        startActivity(intent)
+      }
     }
+  }
 
-    private fun setupAdapter() {
-        binding.rvMovie.apply {
-            adapter = this@HomeFragment.movieAdapter
-            layoutManager = LinearLayoutManager(requireContext())
+  private fun observeViewModel() {
+    viewModel.getMovies()
+
+    viewModel.homeUiState.observe(viewLifecycleOwner) {
+      when (it) {
+        is HomeUiState.Error -> {
+          binding.progressBar.isGone = true
+          Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
         }
-
-        movieAdapter.onClickListener = object : OnMovieClickListener {
-            override fun onClickItem(movieTrending: MovieTrending) {
-                val intent = Intent(requireActivity(), DetailMovieActivity::class.java)
-                    .putExtra(DetailMovieActivity.MOVIE_EXTRA, movieTrending)
-
-                startActivity(intent)
-            }
+        HomeUiState.Initial -> binding.progressBar.isGone = true
+        HomeUiState.Loading -> binding.progressBar.isVisible = true
+        is HomeUiState.ShowMovies -> {
+          movieAdapter.setMovies(it.movies)
+          binding.progressBar.isGone = true
         }
+      }
     }
-
-    private fun observeViewModel() {
-        viewModel.getMovies()
-
-        viewModel.homeUiState.observe(viewLifecycleOwner) {
-            when(it) {
-                is HomeUiState.Error -> {
-                    binding.progressBar.isGone = true
-                    Toast.makeText(requireContext(), it.message, Toast.LENGTH_SHORT).show()
-                }
-                HomeUiState.Initial -> binding.progressBar.isGone = true
-                HomeUiState.Loading -> binding.progressBar.isVisible = true
-                is HomeUiState.ShowMovies -> {
-                    movieAdapter.setMovies(it.movies)
-                    binding.progressBar.isGone = true
-                }
-            }
-        }
-    }
+  }
 }

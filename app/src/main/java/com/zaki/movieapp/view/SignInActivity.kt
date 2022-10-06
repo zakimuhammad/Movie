@@ -15,59 +15,65 @@ import javax.inject.Inject
 
 class SignInActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivitySignInBinding
+  lateinit var binding: ActivitySignInBinding
 
-    @Inject lateinit var viewModel: SignInViewModel
+  @Inject lateinit var viewModel: SignInViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
 
-        (applicationContext as MovieApplication).appComponent.authComponent().create().inject(this)
+    (applicationContext as MovieApplication).appComponent.authComponent().create().inject(this)
 
-        binding = ActivitySignInBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    binding = ActivitySignInBinding.inflate(layoutInflater)
+    setContentView(binding.root)
 
-        initClickListener()
-        collectState()
+    initClickListener()
+    collectState()
 
-        viewModel.checkSession()
+    viewModel.checkSession()
+  }
+
+  private fun initClickListener() {
+    binding.buttonRegister.setOnClickListener {
+      val intent = Intent(this, SignUpActivity::class.java)
+      startActivity(intent)
     }
 
-    private fun initClickListener() {
-        binding.buttonRegister.setOnClickListener {
-            val intent = Intent(this, SignUpActivity::class.java)
+    binding.buttonLogin.setOnClickListener {
+      val username = binding.outlineTextUsername.editText?.text.toString()
+      val password = binding.outlineTextPassword.editText?.text.toString()
+      viewModel.checkLogin(username, password)
+    }
+  }
+
+  private fun collectState() {
+    lifecycleScope.launchWhenStarted {
+      viewModel.signInUiState.collect { signInUiState ->
+        when (signInUiState) {
+          SignInUiState.Failed -> {
+            Toast.makeText(
+              this@SignInActivity,
+              resources.getString(R.string.sign_in_failed_message),
+              Toast.LENGTH_SHORT
+            ).show()
+            binding.progressBar.isVisible = false
+          }
+          SignInUiState.Initial -> {
+            binding.progressBar.isVisible = false
+          }
+          SignInUiState.Loading -> {
+            binding.progressBar.isVisible = true
+          }
+          SignInUiState.GoToMainActivity -> {
+            binding.progressBar.isVisible = false
+            val intent = Intent(
+              this@SignInActivity,
+              MainActivity::class.java
+            ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
+          }
         }
-
-        binding.buttonLogin.setOnClickListener {
-            val username = binding.outlineTextUsername.editText?.text.toString()
-            val password = binding.outlineTextPassword.editText?.text.toString()
-            viewModel.checkLogin(username, password)
-        }
+      }
     }
-
-    private fun collectState() {
-        lifecycleScope.launchWhenStarted {
-            viewModel.signInUiState.collect { signInUiState ->
-                when(signInUiState) {
-                    SignInUiState.Failed -> {
-                        Toast.makeText(this@SignInActivity, resources.getString(R.string.sign_in_failed_message), Toast.LENGTH_SHORT).show()
-                        binding.progressBar.isVisible = false
-                    }
-                    SignInUiState.Initial -> {
-                        binding.progressBar.isVisible = false
-                    }
-                    SignInUiState.Loading -> {
-                        binding.progressBar.isVisible = true
-                    }
-                    SignInUiState.GoToMainActivity -> {
-                        binding.progressBar.isVisible = false
-                        val intent = Intent(this@SignInActivity, MainActivity::class.java)
-                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(intent)
-                    }
-                }
-            }
-        }
-    }
+  }
 }

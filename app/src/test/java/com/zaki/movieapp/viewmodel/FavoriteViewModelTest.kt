@@ -20,41 +20,35 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.TestRule
 
-@ExperimentalCoroutinesApi
-class FavoriteViewModelTest {
+@ExperimentalCoroutinesApi class FavoriteViewModelTest {
 
-    @get:Rule
-    var testRule: TestRule = InstantTaskExecutorRule()
+  @get:Rule var testRule: TestRule = InstantTaskExecutorRule()
 
-    @MockK
-    lateinit var movieRepository: MovieRepository
+  @MockK lateinit var movieRepository: MovieRepository
 
-    private lateinit var viewModel: FavoriteViewModel
+  private lateinit var viewModel: FavoriteViewModel
 
-    private val testDispatcher = UnconfinedTestDispatcher()
+  private val testDispatcher = UnconfinedTestDispatcher()
 
-    @Before
-    fun setUp() {
-        MockKAnnotations.init(this)
-        Dispatchers.setMain(testDispatcher)
-        viewModel = FavoriteViewModel(movieRepository, testDispatcher)
+  @Before fun setUp() {
+    MockKAnnotations.init(this)
+    Dispatchers.setMain(testDispatcher)
+    viewModel = FavoriteViewModel(movieRepository, testDispatcher)
+  }
+
+  @After fun tearDown() {
+    Dispatchers.resetMain()
+    clearAllMocks()
+  }
+
+  @Test fun `given data when call getFavoriteMovies then movies should have values`() {
+    val movies = listOf(MovieTrending(id = 912312), MovieTrending(id = 1223))
+    every { movieRepository.getFavoriteMovies() } returns Observable.create {
+      it.onNext(movies)
     }
 
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-        clearAllMocks()
-    }
+    viewModel.getFavoriteMovies()
 
-    @Test
-    fun `given data when call getFavoriteMovies then movies should have values`() {
-        val movies = listOf(MovieTrending(id = 912312), MovieTrending(id = 1223))
-        every { movieRepository.getFavoriteMovies() } returns Observable.create {
-            it.onNext(movies)
-        }
-
-        viewModel.getFavoriteMovies()
-
-        assertThat(viewModel.movies.value).isEqualTo(movies)
-    }
+    assertThat(viewModel.movies.value).isEqualTo(movies)
+  }
 }

@@ -8,8 +8,7 @@ import dagger.Subcomponent
 @Subcomponent(modules = [DispatchersModule::class, DatabaseModule::class, NetworkModule::class])
 interface AuthComponent {
 
-  @Subcomponent.Factory
-  interface Factory {
+  @Subcomponent.Factory interface Factory {
     fun create(): AuthComponent
   }
 

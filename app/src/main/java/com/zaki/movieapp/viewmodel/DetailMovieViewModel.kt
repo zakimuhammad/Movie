@@ -12,16 +12,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class DetailMovieViewModel @Inject constructor(
-  private val movieRepository: MovieRepository,
-  private val ioDispatcher: CoroutineDispatcher
-): ViewModel() {
+  private val movieRepository: MovieRepository, private val ioDispatcher: CoroutineDispatcher
+) : ViewModel() {
 
   private val _favoriteState: MutableLiveData<Boolean> = MutableLiveData()
   val favoriteState: LiveData<Boolean> = _favoriteState
 
   fun getFavoriteMovie(movieTrending: MovieTrending) {
-    movieRepository.getFavoriteMovie(movieTrending.id ?: 0)
-      .subscribe {
+    movieRepository.getFavoriteMovie(movieTrending.id ?: 0).subscribe {
         _favoriteState.value = it.isNotEmpty()
       }
   }

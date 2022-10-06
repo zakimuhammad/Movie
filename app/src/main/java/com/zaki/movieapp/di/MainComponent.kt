@@ -9,8 +9,7 @@ import dagger.Subcomponent
 @ActivityScope
 @Subcomponent(modules = [DispatchersModule::class, AdapterModule::class, DatabaseModule::class, NetworkModule::class])
 interface MainComponent {
-  @Subcomponent.Factory
-  interface Factory {
+  @Subcomponent.Factory interface Factory {
     fun create(): MainComponent
   }
 

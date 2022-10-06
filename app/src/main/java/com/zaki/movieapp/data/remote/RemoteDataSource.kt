@@ -14,8 +14,7 @@ import retrofit2.Response
 import javax.inject.Inject
 
 class RemoteDataSource @Inject constructor(
-  private val movieApiService: MovieApiService,
-  private val gson: Gson
+  private val movieApiService: MovieApiService, private val gson: Gson
 ) {
 
   fun getMoviesFromApi(): Observable<Result<List<MovieTrending>>> {
@@ -25,8 +24,7 @@ class RemoteDataSource @Inject constructor(
         val response = movieApiService.getTrendingMovie()
         response.enqueue(object : Callback<MovieTrendingResponse> {
           override fun onResponse(
-            call: Call<MovieTrendingResponse>,
-            response: Response<MovieTrendingResponse>
+            call: Call<MovieTrendingResponse>, response: Response<MovieTrendingResponse>
           ) {
             if (response.isSuccessful) {
               val movies = response.body()?.results ?: emptyList()

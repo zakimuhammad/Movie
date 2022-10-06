@@ -9,20 +9,21 @@ import com.zaki.movieapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+  private lateinit var binding: ActivityMainBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    binding = ActivityMainBinding.inflate(layoutInflater)
+    setContentView(binding.root)
 
-        setupNavigation()
-    }
+    setupNavigation()
+  }
 
-    private fun setupNavigation() {
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container_view_main) as NavHostFragment
-        val navController = navHostFragment.navController
-        binding.bottomNavMain.setupWithNavController(navController)
-    }
+  private fun setupNavigation() {
+    val navHostFragment =
+      supportFragmentManager.findFragmentById(R.id.fragment_container_view_main) as NavHostFragment
+    val navController = navHostFragment.navController
+    binding.bottomNavMain.setupWithNavController(navController)
+  }
 }

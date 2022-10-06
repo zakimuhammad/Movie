@@ -13,35 +13,36 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
-    private val localDataSource: LocalDataSource,
-    private val dataStoreUseCase: DataStoreUseCase,
-    private val ioDispatcher: CoroutineDispatcher
-): ViewModel() {
+  private val localDataSource: LocalDataSource,
+  private val dataStoreUseCase: DataStoreUseCase,
+  private val ioDispatcher: CoroutineDispatcher
+) : ViewModel() {
 
-    private val _userUiState: MutableStateFlow<ProfileUiState> = MutableStateFlow(ProfileUiState.Initial)
-    val userUiState = _userUiState.asStateFlow()
+  private val _userUiState: MutableStateFlow<ProfileUiState> =
+    MutableStateFlow(ProfileUiState.Initial)
+  val userUiState = _userUiState.asStateFlow()
 
-    fun getUser() = viewModelScope.launch(ioDispatcher) {
-        _userUiState.emit(ProfileUiState.Loading)
-        val username = dataStoreUseCase.getLoginSession().first()
-        val userProfile = localDataSource.getUserLogin(username).first()
+  fun getUser() = viewModelScope.launch(ioDispatcher) {
+    _userUiState.emit(ProfileUiState.Loading)
+    val username = dataStoreUseCase.getLoginSession().first()
+    val userProfile = localDataSource.getUserLogin(username).first()
 
-        if (userProfile != null) {
-            _userUiState.emit(ProfileUiState.ShowUser(userProfile))
-        } else {
-            logout()
-        }
+    if (userProfile != null) {
+      _userUiState.emit(ProfileUiState.ShowUser(userProfile))
+    } else {
+      logout()
     }
+  }
 
-    fun logout() = viewModelScope.launch(ioDispatcher) {
-        dataStoreUseCase.saveSession("")
-        _userUiState.emit(ProfileUiState.GoToLoginActivity)
-    }
+  fun logout() = viewModelScope.launch(ioDispatcher) {
+    dataStoreUseCase.saveSession("")
+    _userUiState.emit(ProfileUiState.GoToLoginActivity)
+  }
 }
 
 sealed class ProfileUiState {
-    object Initial: ProfileUiState()
-    object Loading: ProfileUiState()
-    data class ShowUser(val authEntity: AuthEntity): ProfileUiState()
-    object GoToLoginActivity: ProfileUiState()
+  object Initial : ProfileUiState()
+  object Loading : ProfileUiState()
+  data class ShowUser(val authEntity: AuthEntity) : ProfileUiState()
+  object GoToLoginActivity : ProfileUiState()
 }
