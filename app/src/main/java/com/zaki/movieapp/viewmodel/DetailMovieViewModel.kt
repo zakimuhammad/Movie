@@ -1,6 +1,5 @@
 package com.zaki.movieapp.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,8 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.zaki.movieapp.data.remote.response.MovieTrending
 import com.zaki.movieapp.data.repository.MovieRepository
 import com.zaki.movieapp.mapper.MovieMapper.toMovieFavoriteEntity
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
