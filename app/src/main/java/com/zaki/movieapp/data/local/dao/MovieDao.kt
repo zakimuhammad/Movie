@@ -10,7 +10,7 @@ import io.reactivex.rxjava3.core.Observable
   fun getTrendingMovies(): Observable<List<MovieTrendingEntity>>
 
   @Insert(onConflict = OnConflictStrategy.REPLACE)
-  suspend fun insertMovies(movies: List<MovieTrendingEntity>)
+  fun insertMovies(movies: List<MovieTrendingEntity>)
 
   @Query("SELECT * FROM movie_favorites")
   fun getFavoriteMovies(): Observable<List<MovieFavoriteEntity>>

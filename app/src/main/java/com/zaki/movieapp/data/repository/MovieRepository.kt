@@ -8,6 +8,7 @@ import com.zaki.movieapp.helper.Result
 import com.zaki.movieapp.mapper.MovieMapper.toEntity
 import com.zaki.movieapp.util.ConnectivityManager
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 class MovieRepository @Inject constructor(
@@ -26,13 +27,13 @@ class MovieRepository @Inject constructor(
 
   private fun getMoviesFromApi(): Observable<Result<List<MovieTrending>>> {
     return remoteDataSource.getMoviesFromApi()
-  }
-
-  suspend fun insertMovies(movies: List<MovieTrending>) {
-    if (connectivityManager.isHasConnection()) {
-      val moviesEntity = movies.map { it.toEntity() }
-      localDataSource.insertMovies(moviesEntity)
-    }
+      .doOnNext { result ->
+        if (result is Result.Success) {
+          val movies = result.data.map { it.toEntity() }
+          localDataSource.insertMovies(movies)
+        }
+      }
+      .subscribeOn(Schedulers.io())
   }
 
   private fun getMoviesFromDB(): Observable<Result<List<MovieTrending>>> {

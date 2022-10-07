@@ -32,7 +32,7 @@ class LocalDataSource @Inject constructor(
       }.map { Result.Success(it) }
   }
 
-  suspend fun insertMovies(movies: List<MovieTrendingEntity>) {
+  fun insertMovies(movies: List<MovieTrendingEntity>) {
     movieDao.insertMovies(movies)
   }
 

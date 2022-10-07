@@ -27,16 +27,11 @@ class HomeViewModel @Inject constructor(
           }
           is Result.Success -> {
             _homeUiState.postValue(HomeUiState.ShowMovies(result.data))
-            insertMovie(result.data)
           }
         }
       }, { error ->
         _homeUiState.postValue(HomeUiState.Error(error.message.orEmpty()))
       })
-  }
-
-  private fun insertMovie(movies: List<MovieTrending>) = viewModelScope.launch(ioDispatcher) {
-    movieRepository.insertMovies(movies)
   }
 }
 

@@ -5,10 +5,7 @@ import com.google.common.truth.Truth.assertThat
 import com.zaki.movieapp.data.remote.response.MovieTrending
 import com.zaki.movieapp.data.repository.MovieRepository
 import com.zaki.movieapp.helper.Result
-import io.mockk.MockKAnnotations
-import io.mockk.clearAllMocks
-import io.mockk.coVerify
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
 import io.reactivex.rxjava3.core.Observable
 import kotlinx.coroutines.Dispatchers
@@ -58,15 +55,14 @@ import org.junit.rules.TestRule
 
     assertThat(viewModel.homeUiState.value).isEqualTo(HomeUiState.ShowMovies(data))
 
-    coVerify {
-      movieRepository.insertMovies(any())
+    verify {
       movieRepository.getMovies()
     }
   }
 
   @Test fun `given nothing when call getMovies then homeUiState value should loading`() {
     every { movieRepository.getMovies() } returns Observable.create {
-      it.onNext(Result.Loading)
+      it.onComplete()
     }
 
     viewModel.getMovies()
